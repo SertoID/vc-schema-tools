@@ -1,0 +1,132 @@
+version: 2.1
+orbs:
+  node: circleci/node@2.0.2
+
+defaults: &defaults
+  docker:
+    - image: circleci/node:14.15.4
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore yarn cache
+          key: node-modules-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install modules
+          command: yarn --frozen-lockfile install
+      - save_cache:
+          name: Save yarn cache
+          key: node-modules-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+      - run:
+          name: Building library
+          command: yarn build
+          no_output_timeout: 30m
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - build
+            - dist
+            - src
+            - public
+            - devops
+            - .eslintignore
+            - .eslintrc.js
+            - .git
+            - .prettierignore
+            - .prettierrc.yaml
+            - node_modules
+            - codecov.yml
+            - yarn.lock
+            - package.json
+            - jest.json
+            - tsconfig.json
+            - Dockerfile
+
+  test:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ./
+      - restore_cache:
+          name: Restore yarn cache
+          key: node-modules-{{ checksum "yarn.lock" }}
+      - run:
+          name: Running tests
+          # command: yarn test
+          command: echo "No tests yet"
+      - save_cache:
+          name: Save yarn cache
+          key: node-modules-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+      # - persist_to_workspace:
+      #     root: ./
+      #     paths:
+      #       - coverage
+
+  prettier:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ./
+      - restore_cache:
+          name: Restore yarn cache
+          key: node-modules-{{ checksum "yarn.lock" }}
+      - run:
+          name: Running prettier
+          command: yarn prettier:lint
+      - restore_cache:
+          name: Restore yarn cache
+          key: node-modules-{{ checksum "yarn.lock" }}
+
+  lint:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ./
+      - restore_cache:
+          name: Restore yarn cache
+          key: node-modules-{{ checksum "yarn.lock" }}
+      - run:
+          name: Running lint
+          command: yarn lint
+      - restore_cache:
+          name: Restore yarn cache
+          key: node-modules-{{ checksum "yarn.lock" }}
+
+  codecov:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ./
+      - restore_cache:
+          name: Restore yarn cache
+          key: node-modules-{{ checksum "yarn.lock" }}
+      - run:
+          name: Running code coverage
+          command: echo "No codecov yet"
+      - restore_cache:
+          name: Restore yarn cache
+          key: node-modules-{{ checksum "yarn.lock" }}
+
+workflows:
+  build-lint-test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - lint:
+          requires:
+            - build
+      - prettier:
+          requires:
+            - build
+      - codecov:
+          requires:
+            - test
