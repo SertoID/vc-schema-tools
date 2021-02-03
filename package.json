@@ -8,8 +8,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run clean && tsc",
     "watch": "tsc -w",
+    "clean": "rimraf dist/",
     "prettier": "prettier --config .prettierrc.yaml --write --list-different './**/*.{ts,tsx,json,md}'",
     "prettier:lint": "prettier --config .prettierrc.yaml --list-different './**/*.{ts,tsx,json,md}'",
     "lint": "eslint . --ext .ts,.tsx",
@@ -33,6 +34,7 @@
     "prettier": "2.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "rimraf": "^3.0.2",
     "serto-ui": "^0.1.1",
     "styled-components": "^5.1.1"
   }
