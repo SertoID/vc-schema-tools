@@ -1,5 +1,3 @@
-import { getSchemaUrl } from "./utils";
-
 export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
   DiplomaCredential: `{
   "@context": {
@@ -7,6 +5,10 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     "@rootType": "DiplomaCredential",
     "@title": "Diploma Credential",
     "@metadata": {
+      "uris": {
+        "jsonLdContext": "https://example.com/schemas/diploma-credential/ld-context.json",
+        "jsonSchema": "https://example.com/schemas/diploma-credential/json-schema.json"
+      },
       "version": "1.0",
       "slug": "diploma-credential",
       "icon": "🎓",
@@ -14,7 +16,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     },
     "w3ccred": "https://www.w3.org/2018/credentials#",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-    "schema-id": "${getSchemaUrl("diploma-credential", "ld-context-plus")}#",
+    "schema-id": "https://example.com/schemas/diploma-credential/ld-context.json#",
     "DiplomaCredential": {
       "@id": "schema-id",
       "@contains": "credentialSubject"
@@ -67,13 +69,17 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     "@rootType": "ContentPublishCredential",
     "@title": "Content Publish Credential",
     "@metadata": {
+      "uris": {
+        "jsonLdContext": "https://example.com/schemas/content-publish-credential/ld-context.json",
+        "jsonSchema": "https://example.com/schemas/content-publish-credential/json-schema.json"
+      },
       "version": "1.0",
       "slug": "content-publish-credential",
       "icon": "📰",
       "discoverable": true
     },
     "w3ccred": "https://www.w3.org/2018/credentials#",
-    "schema-id": "${getSchemaUrl("content-publish-credential", "ld-context-plus")}#",
+    "schema-id": "https://example.com/schemas/content-publish-credential/ld-context.json#",
     "ContentPublishCredential": {
       "@id": "schema-id",
       "@contains": "credentialSubject"
@@ -210,6 +216,10 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     "@rootType": "ContentPublishCredential",
     "@title": "Content Publish Credential",
     "@metadata": {
+      "uris": {
+        "jsonLdContext": "https://example.com/schemas/content-publish-credential/ld-context.json",
+        "jsonSchema": "https://example.com/schemas/content-publish-credential/json-schema.json"
+      },
       "version": "1.0",
       "slug": "content-publish-credential",
       "icon": "📰",
@@ -217,7 +227,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     },
     "xsd": "http://www.w3.org/2001/XMLSchema#",
     "w3ccred": "https://www.w3.org/2018/credentials#",
-    "schema-id": "${getSchemaUrl("content-publish-credential", "ld-context-plus")}#",
+    "schema-id": "https://example.com/schemas/content-publish-credential/ld-context.json#",
     "ContentPublishCredential": {
       "@id": "schema-id",
       "@contains": "credentialSubject"
@@ -240,128 +250,6 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
       "@description": "Data about piece of content this publisher has published",
       "@required": true,
       "@context": {
-        "id": {
-          "@id": "@id",
-          "@type": "xsd:string",
-          "@description": "Globally unique identifier for this piece of content across all versions",
-          "@required": true
-        },
-        "versionId": {
-          "@id": "http://schema.org/version",
-          "@type": "xsd:string",
-          "@description": "Globally unique identifier that refers to this version of this piece of content"
-        },
-        "headline": {
-          "@id": "schema-id:headline",
-          "@type": "xsd:string",
-          "@required": true
-        },
-        "description": {
-          "@id": "schema-id:description",
-          "@type": "xsd:string"
-        },
-        "url": {
-          "@id": "schema-id:url",
-          "@type": "xsd:anyURI",
-          "@required": true
-        },
-        "datePublished": {
-          "@id": "schema-id:date-published",
-          "@type": "xsd:dateTime",
-          "@required": true
-        },
-        "dateModified": {
-          "@id": "schema-id:date-modified",
-          "@type": "xsd:dateTime"
-        },
-        "publisher": {
-          "@id": "schema-id:publisher",
-          "@required": true,
-          "@context": {
-            "id": {
-              "@id": "schema-id:publisher-id",
-              "@type": "xsd:string",
-              "@description": "Publisher DID or other unique identifier URI"
-            },
-            "name": {
-              "@id": "schema-id:publisher-name",
-              "@type": "xsd:string",
-              "@required": true
-            },
-            "url": {
-              "@id": "schema-id:publisher-url",
-              "@type": "xsd:anyURI",
-              "@required": true,
-              "@description": "Publisher homepage"
-            }
-          }
-        },
-        "author": {
-          "@id": "schema-id:author",
-          "@context": {
-            "id": {
-              "@id": "schema-id:publisher-id",
-              "@type": "xsd:string",
-              "@description": "Author DID or other unique identifier URI"
-            },
-            "name": {
-              "@id": "schema-id:author-name",
-              "@type": "xsd:string",
-              "@required": true
-            }
-          }
-        },
-        "keywords": {
-          "@id": "schema-id:keywords",
-          "@type": "xsd:string",
-          "@description": "Comma-separated list of tags/keywords"
-        },
-        "image": {
-          "@id": "schema-id:image",
-          "@type": "xsd:anyURI"
-        },
-        "rawContentUrl": {
-          "@id": "schema-id:raw-content-url",
-          "@type": "xsd:anyURI",
-          "@description": "URL where raw, machine-readable, full text of content can be found (may require authentication)"
-        },
-        "rawContentHash": {
-          "@id": "schema-id:raw-content-hash",
-          "@type": "xsd:string",
-          "@description": "Keccak-256 hash of content at \`rawContentUrl\`"
-        }
-      }
-    }
-  }
-}`,
-  "ContentPublishCredential (flat)": `{
-  "@context": {
-    "@version": 1.1,
-    "@rootType": "ContentPublishCredential",
-    "@title": "Content Publish Credential",
-    "@metadata": {
-      "version": "1.0",
-      "slug": "content-publish-credential",
-      "icon": "📰",
-      "discoverable": true
-    },
-    "xsd": "http://www.w3.org/2001/XMLSchema#",
-    "w3ccred": "https://www.w3.org/2018/credentials#",
-    "schema-id": "${getSchemaUrl("content-publish-credential", "ld-context-plus")}#",
-    "ContentPublishCredential": {
-      "@id": "schema-id",
-      "@contains": "credentialSubject"
-    },
-    "credentialSubject": {
-      "@id": "w3ccred:credentialSubject",
-      "@required": true,
-      "@context": {
-        "publisherId": {
-          "@id": "@id",
-          "@type": "@id",
-          "@description": "Publisher DID",
-          "@required": true
-        },
         "id": {
           "@id": "@id",
           "@type": "xsd:string",
@@ -461,13 +349,17 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     "@version": 1.1,
     "@rootType": "ContentPublishCredential",
     "@metadata": {
+      "uris": {
+        "jsonLdContext": "https://example.com/schemas/content-publish-credential/ld-context.json",
+        "jsonSchema": "https://example.com/schemas/content-publish-credential/json-schema.json"
+      },
       "version": "1.0",
       "slug": "content-publish-credential",
       "icon": "📰",
       "discoverable": true
     },
     "w3ccred": "https://www.w3.org/2018/credentials#",
-    "schema-id": "${getSchemaUrl("content-publish-credential", "ld-context-plus")}#",
+    "schema-id": "https://example.com/schemas/content-publish-credential/ld-context.json#",
     "ContentPublishCredential": {
       "@id": "schema-id",
       "@contains": "credentialSubject"
@@ -505,6 +397,10 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     "@title": "Test Credential",
     "@description": "A flat test credential with all of the data types supported by our wizard UIs.",
     "@metadata": {
+      "uris": {
+        "jsonLdContext": "https://example.com/schemas/test-credential/ld-context.json",
+        "jsonSchema": "https://example.com/schemas/test-credential/json-schema.json"
+      },
       "version": "1.0",
       "slug": "test-credential",
       "icon": "🧪",
@@ -512,7 +408,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     },
     "xsd": "http://www.w3.org/2001/XMLSchema#",
     "w3ccred": "https://www.w3.org/2018/credentials#",
-    "schema-id": "${getSchemaUrl("test-credential", "ld-context-plus")}#",
+    "schema-id": "https://example.com/schemas/test-credential/ld-context.json#",
     "TestCredential": {
       "@id": "schema-id",
       "@contains": "credentialSubject"
