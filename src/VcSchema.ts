@@ -2,16 +2,22 @@
 
 import Ajv from "ajv";
 import { omitDeep, mapValuesDeep } from "deepdash-es/standalone";
-import slugify from "@sindresorhus/slugify";
-import { getSchemaUrl } from "./utils";
 
 const ajv = new Ajv();
 
-export interface LdContextPlus<MetadataType = any> {
+export interface DefaultSchemaMetadata {
+  uris?: {
+    jsonLdContextPlus?: string;
+    jsonLdContext?: string;
+    jsonSchema?: string;
+  };
+}
+
+export interface LdContextPlus<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> {
   "@context": LdContextPlusRootNode<MetadataType>;
 }
 
-export interface LdContextPlusRootNode<MetadataType = any> {
+export interface LdContextPlusRootNode<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> {
   "@rootType": string;
   "@id"?: string;
   "@title"?: string;
@@ -20,7 +26,7 @@ export interface LdContextPlusRootNode<MetadataType = any> {
   [key: string]: LdContextPlusNode<MetadataType> | MetadataType | number | string | undefined;
 }
 
-export interface LdContextPlusInnerNode<MetadataType = any> {
+export interface LdContextPlusInnerNode<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> {
   "@id": string;
   "@contains"?: string;
   "@replaceWith"?: string;
@@ -31,7 +37,7 @@ export interface LdContextPlusInnerNode<MetadataType = any> {
   "@context"?: { [key: string]: LdContextPlusNode<MetadataType> };
 }
 
-export interface LdContextPlusLeafNode<MetadataType = any> {
+export interface LdContextPlusLeafNode<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> {
   "@id": string;
   "@type": string;
   "@dataType"?: string;
@@ -45,7 +51,7 @@ export interface LdContextPlusLeafNode<MetadataType = any> {
 
 export type LdContextPlusNodeKey = keyof LdContextPlusLeafNode | keyof LdContextPlusInnerNode;
 
-export type LdContextPlusNode<MetadataType = any> =
+export type LdContextPlusNode<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> =
   | LdContextPlusInnerNode<MetadataType>
   | LdContextPlusLeafNode<MetadataType>;
 
@@ -128,7 +134,6 @@ const baseVcJsonSchema = {
 };
 
 export class VcSchema {
-  public id?: string;
   public jsonSchemaMessage?: string; // @TODO/tobek This should probably be an array and some of the compilation warnings should get added to it.
   public schema: LdContextPlus;
   public jsonLdContext?: any;
@@ -137,8 +142,7 @@ export class VcSchema {
   private debugMode?: boolean;
   private jsonSchemaValidate?: Ajv.ValidateFunction;
 
-  constructor(schema: string | LdContextPlus, id?: string, debugMode?: boolean) {
-    this.id = id && slugify(id);
+  constructor(schema: string | LdContextPlus, debugMode?: boolean) {
     this.debugMode = debugMode;
     if (typeof schema === "string") {
       try {
@@ -152,26 +156,10 @@ export class VcSchema {
 
     // @TODO/tobek Should make a JSON Schema for LdContextPlus and validate `this.schema` here and throw an error if invalid.
 
-    this.jsonLdContext = omitDeep(this.schema, contextPlusFieldsRegexes);
-    if (this.jsonLdContext["@context"] && !this.jsonLdContext["@context"]["@version"]) {
-      // Default to JSON-LD proceessing mode version 1.1
-      this.jsonLdContext["@context"]["@version"] = 1.1;
-    }
-
-    // This is a bit of a hack. We want to be able to add JSON Schema info to "@id" properties. To do this we can have LD Context Plus nodes such as `{ "id" : { "@id": "@id", "@required": true } }` which compiles to JSON-LD @context `{ "id" : { "@id": "@id" } }`. This works and simply aliases "id" to "@id". However, the W3C Credentials JSON-LD @context thatn we import defines `{ @protected: true, "id": "@id" }`. Because of the "@protected" we can't redefine "id" even to an expanded type definition that is functionally identical. So, this mapValuesDeep call replaces `{ "id" : { "@id": "@id" } }` with `{ "id" : "@id" }` which is allowed by "@protected" since it is functionally *and* syntactically the same.
-    this.jsonLdContext = mapValuesDeep(
-      this.jsonLdContext,
-      (value) => {
-        if (value?.["@id"] === "@id") {
-          return "@id";
-        }
-        return value;
-      },
-      { callbackAfterIterate: true },
-    );
-
-    if (this.id && this.jsonLdContext["@context"]?.["schema-id"]) {
-      this.jsonLdContext["@context"]["schema-id"] = getSchemaUrl(this.id, "ld-context") + "#";
+    try {
+      this.jsonLdContext = this.generateJsonLdContext();
+    } catch (err) {
+      throw Error("Failed to generate JSON-LD Context from input: " + err.message);
     }
 
     try {
@@ -265,6 +253,28 @@ export class VcSchema {
     this.debugMode && console.log(...args);
   }
 
+  private generateJsonLdContext(): any {
+    let context = omitDeep(this.schema, contextPlusFieldsRegexes);
+    if (context["@context"] && !context["@context"]["@version"]) {
+      // Default to JSON-LD proceessing mode version 1.1
+      context["@context"]["@version"] = 1.1;
+    }
+
+    // This is a bit of a hack. We want to be able to add JSON Schema info to "@id" properties. To do this we can have LD Context Plus nodes such as `{ "id" : { "@id": "@id", "@required": true } }` which compiles to JSON-LD @context `{ "id" : { "@id": "@id" } }`. This works and simply aliases "id" to "@id". However, the W3C Credentials JSON-LD @context that we import defines `{ @protected: true, "id": "@id" }`. Because of the "@protected" we can't redefine "id" even to an expanded type definition that is functionally identical. So, this mapValuesDeep call replaces `{ "id" : { "@id": "@id" } }` with `{ "id" : "@id" }` which is allowed by "@protected" since it is functionally *and* syntactically the same.
+    context = mapValuesDeep(
+      context,
+      (value) => {
+        if (value?.["@id"] === "@id") {
+          return "@id";
+        }
+        return value;
+      },
+      { callbackAfterIterate: true },
+    );
+
+    return context;
+  }
+
   private generateJsonSchema(): JsonSchema | undefined {
     let context = this.schema["@context"] || this.schema;
     if (Array.isArray(context)) {
@@ -288,7 +298,7 @@ export class VcSchema {
 
     return {
       $schema: "http://json-schema.org/draft-07/schema#",
-      $id: this.id && getSchemaUrl(this.id, "json-schema"),
+      $id: this.schema["@context"]?.["@metadata"]?.uris?.jsonSchema,
       title: context["@title"],
       description: context["@description"],
       ...baseVcJsonSchema,
