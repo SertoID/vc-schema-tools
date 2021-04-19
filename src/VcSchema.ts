@@ -2,136 +2,18 @@
 
 import Ajv from "ajv";
 import { omitDeep, mapValuesDeep } from "deepdash-es/standalone";
+import {
+  JsonSchema,
+  JsonSchemaNode,
+  LdContextPlus,
+  LdContextPlusNode,
+  LdContextPlusRootNode,
+  LdContextPlusInnerNode,
+  LdContextPlusLeafNode,
+} from "./types";
+import { contextPlusFieldsRegexes, jsonLdContextTypeMap, baseVcJsonSchema } from "./helpers";
 
 const ajv = new Ajv();
-
-export interface DefaultSchemaMetadata {
-  uris?: {
-    jsonLdContextPlus?: string;
-    jsonLdContext?: string;
-    jsonSchema?: string;
-  };
-}
-
-export interface LdContextPlus<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> {
-  "@context": LdContextPlusRootNode<MetadataType>;
-}
-
-export interface LdContextPlusRootNode<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> {
-  "@rootType": string;
-  "@id"?: string;
-  "@title"?: string;
-  "@description"?: string;
-  "@metadata"?: MetadataType;
-  [key: string]: LdContextPlusNode<MetadataType> | MetadataType | number | string | undefined;
-}
-
-export interface LdContextPlusInnerNode<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> {
-  "@id": string;
-  "@contains"?: string;
-  "@replaceWith"?: string;
-  "@title"?: string;
-  "@description"?: string;
-  "@required"?: boolean;
-  "@metadata"?: MetadataType;
-  "@context"?: { [key: string]: LdContextPlusNode<MetadataType> };
-}
-
-export interface LdContextPlusLeafNode<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> {
-  "@id": string;
-  "@type": string;
-  "@dataType"?: string;
-  "@format"?: string;
-  "@title"?: string;
-  "@description"?: string;
-  "@required"?: boolean;
-  "@metadata"?: MetadataType;
-  "@items"?: JsonSchemaNode;
-}
-
-export type LdContextPlusNodeKey = keyof LdContextPlusLeafNode | keyof LdContextPlusInnerNode;
-
-export type LdContextPlusNode<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> =
-  | LdContextPlusInnerNode<MetadataType>
-  | LdContextPlusLeafNode<MetadataType>;
-
-export interface JsonSchemaNode {
-  type: string | string[];
-  properties?: { [key: string]: JsonSchemaNode };
-  title?: string;
-  description?: string;
-  format?: string;
-  items?: JsonSchemaNode;
-  required?: string[];
-}
-export interface JsonSchema extends JsonSchemaNode {
-  $schema: string;
-  $id?: string;
-}
-
-const contextPlusFields = [
-  "@rootType",
-  "@replaceWith",
-  "@contains",
-  "@dataType",
-  "@items",
-  "@format",
-  "@required",
-  "@title",
-  "@description",
-  "@metadata",
-];
-const contextPlusFieldsRegexes = contextPlusFields.map((field) => new RegExp(field));
-
-export const jsonLdContextTypeMap: { [key: string]: { type: string; format?: string } } = {
-  "@id": { type: "string", format: "uri" }, // JSON-LD @context convention for an IRI
-  "http://schema.org/Text": { type: "string" },
-  "http://schema.org/URL": { type: "string", format: "uri" },
-  "http://schema.org/DateTime": { type: "string", format: "date-time" },
-  "http://schema.org/Number": { type: "number" },
-  "http://schema.org/Boolean": { type: "boolean" },
-  "xsd:anyURI": { type: "string", format: "uri" },
-  "xsd:string": { type: "string" },
-  "xsd:integer": { type: "integer" },
-  "xsd:dateTime": { type: "string", format: "date-time" },
-};
-
-const baseVcJsonSchema = {
-  type: "object",
-  required: ["@context", "type", "issuer", "issuanceDate", "credentialSubject"],
-  properties: {
-    "@context": {
-      type: ["string", "array", "object"],
-    },
-    id: {
-      type: "string",
-      format: "uri",
-    },
-    type: {
-      type: ["string", "array"],
-      items: {
-        type: "string",
-      },
-    },
-    issuer: {
-      type: "string",
-      format: "uri",
-    },
-    issuanceDate: {
-      type: "string",
-      format: "date-time",
-    },
-    credentialSubject: {
-      type: "object",
-      properties: {
-        id: {
-          type: "string",
-          format: "uri",
-        },
-      },
-    },
-  },
-};
 
 export class VcSchema {
   public jsonSchemaMessage?: string; // @TODO/tobek This should probably be an array and some of the compilation warnings should get added to it.
