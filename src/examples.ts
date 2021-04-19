@@ -68,6 +68,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     "@version": 1.1,
     "@rootType": "ContentPublishCredential",
     "@title": "Content Publish Credential",
+    "@description": "A credential representing a publisher publishing a piece of content such as a news article.",
     "@metadata": {
       "uris": {
         "jsonLdContext": "https://example.com/schemas/content-publish-credential/ld-context.json",
@@ -732,6 +733,10 @@ export const EXAMPLE_VCS: { [key: string]: string } = {
     "degreeName": "Bachelor of Science in Examples",
     "universityName": "Example University",
     "universityId": "did:example:c276e12ec21"
+  },
+  "credentialSchema": {
+    "id": "https://staging.api.schemas.serto.id/v1/public/test-schema-2/1.2/json-schema.json",
+    "type": "JsonSchemaValidator2018"
   }
 }`,
   ContentPublishCredential: `{
