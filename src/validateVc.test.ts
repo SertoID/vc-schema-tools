@@ -70,7 +70,7 @@ it("should warn on failure to fetch JSON Schema", async () => {
   });
   expect(valid).toBe(true);
   expect(warnings.length).toBe(1);
-  expect(warnings[0]).toMatch(/Failed to fetch JSON Schema/);
+  expect(warnings[0]).toMatch(/Failed to load JSON Schema/);
   expect(errors.length).toBe(0);
 });
 // @TODO/tobek Test non-200 response
