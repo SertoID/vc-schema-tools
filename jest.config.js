@@ -15,6 +15,9 @@ module.exports = {
     'tsx',
     'node'
   ],
+
+  preset: "ts-jest",
+
   testEnvironment: 'node',
 
   // The glob patterns Jest uses to detect test files
@@ -24,5 +27,8 @@ module.exports = {
   // A map from regular expressions to paths to transformers
   transform: {
     '\\.(ts)$': 'ts-jest'
-  }
+  },
+  transformIgnorePatterns: [
+    "/node_modules/(?!deepdash-es|lodash-es)"
+  ]
 }
