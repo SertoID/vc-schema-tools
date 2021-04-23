@@ -1,9 +1,15 @@
 import "jest";
+import fetchMock from "jest-fetch-mock";
 import { validateVc } from "./validateVc";
-import { EXAMPLE_VCS } from "./examples";
+import { EXAMPLE_VCS, EXAMPLE_JSON_SCHEMAS } from "./examples";
 
 const vcString = EXAMPLE_VCS.DiplomaCredential;
 const vc = JSON.parse(EXAMPLE_VCS.DiplomaCredential);
+
+beforeEach(() => {
+  fetchMock.enableMocks();
+  fetchMock.mockResponse(JSON.stringify(EXAMPLE_JSON_SCHEMAS.DiplomaCredential));
+});
 
 it("should fail on invalid JSON string", async () => {
   const { valid, errors } = await validateVc(vcString.substr(1));
@@ -31,7 +37,7 @@ it("should warn on missing `credentialSchema`", async () => {
   });
   expect(valid).toBe(true);
   expect(warnings.length).toBe(1);
-  expect(warnings[0]).toMatch(/"credentialSchema" property not found/);
+  expect(warnings[0]).toMatch(/No "credentialSchema" property found/);
   expect(errors.length).toBe(0);
 });
 it("should warn on unsupported `credentialSchema.type`", async () => {
@@ -43,7 +49,7 @@ it("should warn on unsupported `credentialSchema.type`", async () => {
   });
   expect(valid).toBe(true);
   expect(warnings.length).toBe(1);
-  expect(warnings[0]).toMatch(/not supported/);
+  expect(warnings[0]).toMatch(/"SomethingElse" not supported/);
   expect(errors.length).toBe(0);
 });
 it("should warn on missing `credentialSchema.id`", async () => {
@@ -61,21 +67,23 @@ it("should warn on missing `credentialSchema.id`", async () => {
 });
 
 it("should warn on failure to fetch JSON Schema", async () => {
-  const { valid, warnings, errors } = await validateVc({
-    ...vc,
-    credentialSchema: {
-      type: "JsonSchemaValidator2018",
-      id: "http://blahblahblah",
-    },
-  });
+  fetchMock.mockResponse(() => Promise.reject(new Error("nope")));
+  const { valid, warnings, errors } = await validateVc(vc);
   expect(valid).toBe(true);
   expect(warnings.length).toBe(1);
   expect(warnings[0]).toMatch(/Failed to (load|fetch) JSON Schema/);
   expect(errors.length).toBe(0);
 });
-// @TODO/tobek Test non-200 response
+it("should warn on non-200 response when fetching JSON Schema", async () => {
+  fetchMock.mockResponse(() => Promise.resolve({ status: 404 }));
+  const { valid, warnings, errors } = await validateVc(vc);
+  expect(valid).toBe(true);
+  expect(warnings.length).toBeGreaterThanOrEqual(1);
+  expect(warnings[0]).toMatch(/404 response when fetching JSON Schema/);
+  expect(errors.length).toBe(0);
+});
 
-it("should detect invalid via base VC schema even if no JSON Schema", async () => {
+it("should detect missing property from base VC schema even if no JSON Schema provided", async () => {
   const { valid, warnings, errors } = await validateVc({
     ...vc,
     credentialSchema: undefined,
@@ -83,7 +91,7 @@ it("should detect invalid via base VC schema even if no JSON Schema", async () =
   });
   expect(valid).toBe(false);
   expect(warnings.length).toBe(1);
-  expect(warnings[0]).toMatch(/"credentialSchema" property not found/);
+  expect(warnings[0]).toMatch(/No "credentialSchema" property found/);
   expect(errors.length).toBe(1);
   expect(errors[0]).toMatch(/should have required property '@context'/);
 });
@@ -91,11 +99,13 @@ it("should detect invalid via base VC schema even if no JSON Schema", async () =
 it("should detect missing property from JSON Schema", async () => {
   const { valid, warnings, errors } = await validateVc({
     ...vc,
-    // @TODO/tobek Publish a VC schema that has non-default required properties
-    credentialSubject: undefined,
+    credentialSubject: {
+      ...vc.credentialSubject,
+      universityName: undefined,
+    },
   });
   expect(valid).toBe(false);
   expect(warnings.length).toBe(0);
   expect(errors.length).toBe(1);
-  expect(errors[0]).toMatch(/should have required property 'credentialSubject'/);
+  expect(errors[0]).toMatch(/should have required property 'universityName'/);
 });

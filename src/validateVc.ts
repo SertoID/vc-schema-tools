@@ -1,5 +1,6 @@
 import Ajv from "ajv";
-import fetch, { Response } from "cross-fetch";
+import "cross-fetch/polyfill";
+import { Response } from "cross-fetch";
 import { VC } from "./types";
 import { baseVcJsonSchema } from "./helpers";
 
@@ -10,7 +11,7 @@ export async function validateVc(
   errors: string[];
   warnings: string[];
 }> {
-  let valid = true; // @TODO/tobek What's the default here?
+  let valid = true;
   let errors: string[] = [];
   const warnings: string[] = [];
 
@@ -26,10 +27,10 @@ export async function validateVc(
     };
   }
 
-  let jsonSchema: any;
+  let jsonSchema: { [key: string]: any } | undefined;
 
   if (!vc.credentialSchema) {
-    warnings.push(`"credentialSchema" property not found. Falling back to base VC schema.`);
+    warnings.push(`No "credentialSchema" property found. Falling back to base VC schema.`);
   } else if (!vc.credentialSchema.type || vc.credentialSchema.type.indexOf("JsonSchemaValidator") !== 0) {
     warnings.push(
       `"credentialSchema.type" value "${vc.credentialSchema.type}" not supported - expecting "JsonSchemaValidator2018". Falling back to base VC schema.`,
@@ -68,15 +69,24 @@ export async function validateVc(
     const ajv = new Ajv();
     validator = ajv.compile(jsonSchema || baseVcJsonSchema);
   } catch (err) {
-    errors.push(`Failed to generate JSON Schema from input: ${err.message}. Could not validate.`);
-    // @TODO/tobek Set valid to false?
+    errors.push(
+      `Failed to generate JSON Schema from response from ${vc.credentialSchema?.id}: ${err.message}. Could not validate.`,
+    );
+    valid = false;
   }
 
   if (validator) {
     valid = await validator(vc);
     if (validator.errors?.length) {
-      // @TODO/tobek Should we always include the whole error?
-      errors = errors.concat(validator.errors.map((err) => err.message || JSON.stringify(err)));
+      errors = errors.concat(
+        validator.errors.map((err) => {
+          let errorMessage = JSON.stringify(err);
+          if (err.message) {
+            errorMessage = `${err.message} (${errorMessage})`;
+          }
+          return errorMessage;
+        }),
+      );
     }
   }
 
