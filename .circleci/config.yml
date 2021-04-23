@@ -45,6 +45,8 @@ jobs:
             - package.json
             - jest.json
             - tsconfig.json
+            - jest.config.js
+            - babel.config.js
             - Dockerfile
 
   test:

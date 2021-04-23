@@ -1,4 +1,6 @@
 module.exports = {
+  preset: "ts-jest",
+
   clearMocks: true,
   collectCoverage: true,
   coveragePathIgnorePatterns: [
@@ -15,8 +17,6 @@ module.exports = {
     'tsx',
     'node'
   ],
-
-  preset: "ts-jest",
 
   testEnvironment: 'node',
 
