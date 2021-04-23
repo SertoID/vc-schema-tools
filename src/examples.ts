@@ -735,7 +735,7 @@ export const EXAMPLE_VCS: { [key: string]: string } = {
     "universityId": "did:example:c276e12ec21"
   },
   "credentialSchema": {
-    "id": "https://example.com/schemas/diploma-credential/json-schema.json",
+    "id": "https://staging.api.schemas.serto.id/v1/public/diploma-credential/json-schema.json",
     "type": "JsonSchemaValidator2018"
   }
 }`,
