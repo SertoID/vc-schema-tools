@@ -68,6 +68,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     "@version": 1.1,
     "@rootType": "ContentPublishCredential",
     "@title": "Content Publish Credential",
+    "@description": "A credential representing a publisher publishing a piece of content such as a news article.",
     "@metadata": {
       "uris": {
         "jsonLdContext": "https://example.com/schemas/content-publish-credential/ld-context.json",
@@ -732,6 +733,10 @@ export const EXAMPLE_VCS: { [key: string]: string } = {
     "degreeName": "Bachelor of Science in Examples",
     "universityName": "Example University",
     "universityId": "did:example:c276e12ec21"
+  },
+  "credentialSchema": {
+    "id": "https://staging.api.schemas.serto.id/v1/public/diploma-credential/json-schema.json",
+    "type": "JsonSchemaValidator2018"
   }
 }`,
   ContentPublishCredential: `{
@@ -831,4 +836,34 @@ export const EXAMPLE_VCS: { [key: string]: string } = {
     "hi there": "these are the minimum required properties for all VCs - if you remove any, this VC won't validate"
   }
 }`,
+};
+
+export const EXAMPLE_JSON_SCHEMAS = {
+  DiplomaCredential: {
+    $schema: "http://json-schema.org/draft-07/schema#",
+    $id:
+      "http://sertoschemabackendstaging.eba-ba3rcff5.us-east-2.elasticbeanstalk.com/v1/public/diploma-credential/json-schema.json",
+    title: "Diploma Credential",
+    description: "Credential attesting an alumni's degree from a university.",
+    type: "object",
+    required: ["@context", "type", "issuer", "issuanceDate", "credentialSubject"],
+    properties: {
+      "@context": { type: ["string", "array", "object"] },
+      id: { type: "string", format: "uri" },
+      type: { type: ["string", "array"], items: { type: "string" } },
+      issuer: { type: "string", format: "uri" },
+      issuanceDate: { type: "string", format: "date-time" },
+      credentialSubject: {
+        type: "object",
+        required: ["id", "universityName", "degreeName"],
+        properties: {
+          id: { title: "Alumni ID", type: "string", format: "uri" },
+          universityId: { title: "University ID", description: "", type: "string", format: "uri" },
+          universityName: { title: "University Name", description: "", type: "string" },
+          degreeName: { title: "Degree Name", description: 'E.g. "Bachelor of Arts in Astrophysics"', type: "string" },
+          graduationDate: { title: "Graduation Date", description: "", type: "string", format: "date-time" },
+        },
+      },
+    },
+  },
 };
