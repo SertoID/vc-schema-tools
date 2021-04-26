@@ -39,11 +39,31 @@ import { validateVc, EXAMPLE_VCS } from "vc-schema-tools";
   // warnings.length === 0
   // errors.length === 0
 
-  vc.credentialSubject.degreeName = undefined;
+  delete vc.credentialSubject.degreeName;
   ({ valid, warnings, errors } = await validateVc(vc));
   // valid === false
   // warnings.length === 0
   // errors.length === 1
   // errors[0].includes("should have required property 'degreeName'")
 })();
+```
+
+### Generating a VC schema
+
+This library provides a `VcSchema` class that can be instantiated with a [JSON-LD Context Plus schema](https://docs.google.com/document/d/1l41XsI1nTCxx3T6IpAV59UkBrMfRzC89TZRPYiDjOC4/edit?usp=sharing). The resulting instance can be used to validate a VC, generate a JSON-LD context, generate a JSON Schema, and various other utilities.
+
+Example usage:
+
+```js
+import { VcSchema, EXAMPLE_SCHEMAS, EXAMPLE_VCS } from "vc-schema-tools";
+
+const schema = new VcSchema(EXAMPLE_SCHEMAS.DiplomaCredential);
+console.log("JSON-LD Context Plus:", schema.getLdContextPlusString());
+console.log("JSON-LD Context:", schema.getJsonLdContextString());
+console.log("JSON Schema:", schema.getJsonSchemaString());
+
+schema.validateVc(EXAMPLE_VCS.DiplomaCredential, (isValid, message) => {
+  console.log("VC validity:", isValid);
+  console.log("Validation message:", message);
+});
 ```
