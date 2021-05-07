@@ -44,8 +44,15 @@ export const baseVcJsonSchema = {
       },
     },
     issuer: {
-      type: "string",
+      type: ["string", "object"],
       format: "uri",
+      required: ["id"],
+      properties: {
+        id: {
+          type: "string",
+          format: "uri",
+        },
+      },
     },
     issuanceDate: {
       type: "string",

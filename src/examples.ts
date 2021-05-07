@@ -851,7 +851,17 @@ export const EXAMPLE_JSON_SCHEMAS = {
       "@context": { type: ["string", "array", "object"] },
       id: { type: "string", format: "uri" },
       type: { type: ["string", "array"], items: { type: "string" } },
-      issuer: { type: "string", format: "uri" },
+      issuer: {
+        type: ["string", "object"],
+        format: "uri",
+        required: ["id"],
+        properties: {
+          id: {
+            type: "string",
+            format: "uri",
+          },
+        },
+      },
       issuanceDate: { type: "string", format: "date-time" },
       credentialSubject: {
         type: "object",
