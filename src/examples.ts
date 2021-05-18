@@ -24,7 +24,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     "credentialSubject": {
       "@id": "w3ccred:credentialSubject",
       "@required": true,
-      "@contains": ["degreeName", "universityName", "universityId", "year"],
+      "@contains": ["degreeName", "universityName", "universityId", "graduationDate"],
       "@context": {
         "id": {
           "@id": "@id",
@@ -36,30 +36,27 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     },
     "degreeName": {
       "@id": "schema-id:degreeName",
-      "@type": "rdf:HTML",
-      "@dataType": "string",
+      "@type": "http://schema.org/Text",
       "@required": true,
       "@title": "Degree Name",
       "@description": "E.g. \\"Bachelor of Arts in Astrophysics\\""
     },
+    "graduationDate": {
+      "@id": "schema-id:graduationDate",
+      "@type": "http://schema.org/Date",
+      "@required": true,
+      "@title": "Graduation Date"
+    },
     "universityName": {
       "@id": "schema-id:universityName",
-      "@type": "rdf:HTML",
-      "@dataType": "string",
+      "@type": "http://schema.org/Text",
       "@required": true,
       "@title": "University Name"
     },
     "universityId": {
       "@id": "schema-id:universityId",
-      "@type": "rdf:langString",
-      "@dataType": "string",
+      "@type": "@id",
       "@title": "University ID"
-    },
-    "year": {
-      "@id": "schema-id:year",
-      "@type": "rdf:langString",
-      "@dataType": "integer",
-      "@title": "Year"
     }
   }
 }`,
@@ -442,10 +439,15 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
           "@type": "http://schema.org/URL",
           "@required": true
         },
-        "datePublished": {
-          "@title": "Date Published",
-          "@id": "schema-id:date-published",
-          "@type": "http://schema.org/DateTime",
+        "dateTime": {
+          "@title": "Date & Time",
+          "@id": "schema-id:date-time",
+          "@type": "http://schema.org/DateTime"
+        },
+        "date": {
+          "@title": "Date",
+          "@id": "schema-id:date",
+          "@type": "http://schema.org/Date",
           "@required": true
         },
         "author": {
@@ -731,6 +733,7 @@ export const EXAMPLE_VCS: { [key: string]: string } = {
     "id": "did:ethr:rinkeby:0x9fb04797cc0b1711c86b960105e0c3ed3f9cb749",
     "title": "Diploma Credential",
     "degreeName": "Bachelor of Science in Examples",
+    "graduationDate": "2012-10-31",
     "universityName": "Example University",
     "universityId": "did:example:c276e12ec21"
   },
@@ -871,7 +874,7 @@ export const EXAMPLE_JSON_SCHEMAS = {
           universityId: { title: "University ID", description: "", type: "string", format: "uri" },
           universityName: { title: "University Name", description: "", type: "string" },
           degreeName: { title: "Degree Name", description: 'E.g. "Bachelor of Arts in Astrophysics"', type: "string" },
-          graduationDate: { title: "Graduation Date", description: "", type: "string", format: "date-time" },
+          graduationDate: { title: "Graduation Date", description: "", type: "string", format: "date" },
         },
       },
     },

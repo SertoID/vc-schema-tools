@@ -17,12 +17,14 @@ export const jsonLdContextTypeMap: { [key: string]: { type: string; format?: str
   "@id": { type: "string", format: "uri" }, // JSON-LD @context convention for an IRI
   "http://schema.org/Text": { type: "string" },
   "http://schema.org/URL": { type: "string", format: "uri" },
+  "http://schema.org/Date": { type: "string", format: "date" },
   "http://schema.org/DateTime": { type: "string", format: "date-time" },
   "http://schema.org/Number": { type: "number" },
   "http://schema.org/Boolean": { type: "boolean" },
   "xsd:anyURI": { type: "string", format: "uri" },
   "xsd:string": { type: "string" },
   "xsd:integer": { type: "integer" },
+  "xsd:date": { type: "string", format: "date" },
   "xsd:dateTime": { type: "string", format: "date-time" },
 };
 
