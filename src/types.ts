@@ -2,8 +2,9 @@
 export interface VC {
   "@context": string | string[];
   type: string[];
-  issuer: string | { id: string };
+  issuer: string | { id: string; [key: string]: any };
   issuanceDate: string;
+  expirationDate?: string;
   credentialSubject: { [key: string]: any };
   proof: { jwt: string };
   credentialSchema?: {

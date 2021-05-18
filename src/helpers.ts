@@ -60,12 +60,29 @@ export const baseVcJsonSchema = {
       type: "string",
       format: "date-time",
     },
+    expirationDate: {
+      type: "string",
+      format: "date-time",
+    },
     credentialSubject: {
       type: "object",
       properties: {
         id: {
           type: "string",
           format: "uri",
+        },
+      },
+    },
+    credentialSchema: {
+      type: "object",
+      required: ["id", "type"],
+      properties: {
+        id: {
+          type: "string",
+          format: "uri",
+        },
+        type: {
+          type: "string",
         },
       },
     },
