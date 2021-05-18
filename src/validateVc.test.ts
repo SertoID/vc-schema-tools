@@ -44,6 +44,7 @@ it("should warn on unsupported `credentialSchema.type`", async () => {
   const { valid, warnings, errors } = await validateVc({
     ...vc,
     credentialSchema: {
+      ...vc.credentialSchema,
       type: "SomethingElse",
     },
   });
@@ -52,18 +53,19 @@ it("should warn on unsupported `credentialSchema.type`", async () => {
   expect(warnings[0]).toMatch(/"SomethingElse" not supported/);
   expect(errors.length).toBe(0);
 });
-it("should warn on missing `credentialSchema.id`", async () => {
+it("should fail on missing `credentialSchema.id`", async () => {
   const { valid, warnings, errors } = await validateVc({
     ...vc,
     credentialSchema: {
-      type: "JsonSchemaValidator2018",
+      ...vc.credentialSchema,
       id: undefined,
     },
   });
-  expect(valid).toBe(true);
+  expect(valid).toBe(false);
   expect(warnings.length).toBe(1);
   expect(warnings[0]).toMatch(/"credentialSchema.id" property not found/);
-  expect(errors.length).toBe(0);
+  expect(errors.length).toBe(1);
+  expect(errors[0]).toMatch(/should have required property 'id'/);
 });
 
 it("should warn on failure to fetch JSON Schema", async () => {

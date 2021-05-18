@@ -6,8 +6,8 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     "@title": "Diploma Credential",
     "@metadata": {
       "uris": {
-        "jsonLdContext": "https://example.com/schemas/diploma-credential/ld-context.json",
-        "jsonSchema": "https://example.com/schemas/diploma-credential/json-schema.json"
+        "jsonLdContext": "https://staging.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json",
+        "jsonSchema": "https://staging.api.schemas.serto.id/v1/public/diploma-credential/json-schema.json"
       },
       "version": "1.0",
       "slug": "diploma-credential",
@@ -16,7 +16,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     },
     "w3ccred": "https://www.w3.org/2018/credentials#",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-    "schema-id": "https://example.com/schemas/diploma-credential/ld-context.json#",
+    "schema-id": "https://staging.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json#",
     "DiplomaCredential": {
       "@id": "schema-id",
       "@contains": "credentialSubject"
@@ -24,7 +24,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     "credentialSubject": {
       "@id": "w3ccred:credentialSubject",
       "@required": true,
-      "@contains": ["degreeName", "universityName", "universityId", "year"],
+      "@contains": ["degreeName", "universityName", "universityId", "graduationDate"],
       "@context": {
         "id": {
           "@id": "@id",
@@ -36,30 +36,27 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     },
     "degreeName": {
       "@id": "schema-id:degreeName",
-      "@type": "rdf:HTML",
-      "@dataType": "string",
+      "@type": "http://schema.org/Text",
       "@required": true,
       "@title": "Degree Name",
       "@description": "E.g. \\"Bachelor of Arts in Astrophysics\\""
     },
+    "graduationDate": {
+      "@id": "schema-id:graduationDate",
+      "@type": "http://schema.org/Date",
+      "@required": true,
+      "@title": "Graduation Date"
+    },
     "universityName": {
       "@id": "schema-id:universityName",
-      "@type": "rdf:HTML",
-      "@dataType": "string",
+      "@type": "http://schema.org/Text",
       "@required": true,
       "@title": "University Name"
     },
     "universityId": {
       "@id": "schema-id:universityId",
-      "@type": "rdf:langString",
-      "@dataType": "string",
+      "@type": "@id",
       "@title": "University ID"
-    },
-    "year": {
-      "@id": "schema-id:year",
-      "@type": "rdf:langString",
-      "@dataType": "integer",
-      "@title": "Year"
     }
   }
 }`,
@@ -442,10 +439,15 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
           "@type": "http://schema.org/URL",
           "@required": true
         },
-        "datePublished": {
-          "@title": "Date Published",
-          "@id": "schema-id:date-published",
-          "@type": "http://schema.org/DateTime",
+        "dateTime": {
+          "@title": "Date & Time",
+          "@id": "schema-id:date-time",
+          "@type": "http://schema.org/DateTime"
+        },
+        "date": {
+          "@title": "Date",
+          "@id": "schema-id:date",
+          "@type": "http://schema.org/Date",
           "@required": true
         },
         "author": {
@@ -722,7 +724,7 @@ export const EXAMPLE_VCS: { [key: string]: string } = {
   DiplomaCredential: `{
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
-    "https://www.w3.org/2018/credentials/examples/v1"
+    "https://staging.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json"
   ],
   "type": ["VerifiableCredential", "DiplomaCredential"],
   "issuer": "did:ethr:rinkeby:0x9fb04797cc0b1711c86b960105e0c3ed3f9cb749",
@@ -731,6 +733,7 @@ export const EXAMPLE_VCS: { [key: string]: string } = {
     "id": "did:ethr:rinkeby:0x9fb04797cc0b1711c86b960105e0c3ed3f9cb749",
     "title": "Diploma Credential",
     "degreeName": "Bachelor of Science in Examples",
+    "graduationDate": "2012-10-31",
     "universityName": "Example University",
     "universityId": "did:example:c276e12ec21"
   },
@@ -741,7 +744,8 @@ export const EXAMPLE_VCS: { [key: string]: string } = {
 }`,
   ContentPublishCredential: `{
   "@context": [
-    "https://www.w3.org/2018/credentials/v1"
+    "https://www.w3.org/2018/credentials/v1",
+    "https://example.com/schemas/content-publish-credential/ld-context.json"
   ],
   "id": "did:example:publisher-did#credential-id",
   "type": ["VerifiableCredential", "ContentPublishCredential"],
@@ -871,7 +875,7 @@ export const EXAMPLE_JSON_SCHEMAS = {
           universityId: { title: "University ID", description: "", type: "string", format: "uri" },
           universityName: { title: "University Name", description: "", type: "string" },
           degreeName: { title: "Degree Name", description: 'E.g. "Bachelor of Arts in Astrophysics"', type: "string" },
-          graduationDate: { title: "Graduation Date", description: "", type: "string", format: "date-time" },
+          graduationDate: { title: "Graduation Date", description: "", type: "string", format: "date" },
         },
       },
     },

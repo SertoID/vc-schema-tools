@@ -181,6 +181,7 @@ export class VcSchema {
     return {
       $schema: "http://json-schema.org/draft-07/schema#",
       $id: this.schema["@context"]?.["@metadata"]?.uris?.jsonSchema,
+      $metadata: this.schema["@context"]?.["@metadata"],
       title: context["@title"],
       description: context["@description"],
       ...baseVcJsonSchema,
