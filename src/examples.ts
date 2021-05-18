@@ -6,8 +6,8 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     "@title": "Diploma Credential",
     "@metadata": {
       "uris": {
-        "jsonLdContext": "https://example.com/schemas/diploma-credential/ld-context.json",
-        "jsonSchema": "https://example.com/schemas/diploma-credential/json-schema.json"
+        "jsonLdContext": "https://staging.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json",
+        "jsonSchema": "https://staging.api.schemas.serto.id/v1/public/diploma-credential/json-schema.json"
       },
       "version": "1.0",
       "slug": "diploma-credential",
@@ -16,7 +16,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
     },
     "w3ccred": "https://www.w3.org/2018/credentials#",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-    "schema-id": "https://example.com/schemas/diploma-credential/ld-context.json#",
+    "schema-id": "https://staging.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json#",
     "DiplomaCredential": {
       "@id": "schema-id",
       "@contains": "credentialSubject"
@@ -724,7 +724,7 @@ export const EXAMPLE_VCS: { [key: string]: string } = {
   DiplomaCredential: `{
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
-    "https://www.w3.org/2018/credentials/examples/v1"
+    "https://staging.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json"
   ],
   "type": ["VerifiableCredential", "DiplomaCredential"],
   "issuer": "did:ethr:rinkeby:0x9fb04797cc0b1711c86b960105e0c3ed3f9cb749",
@@ -744,7 +744,8 @@ export const EXAMPLE_VCS: { [key: string]: string } = {
 }`,
   ContentPublishCredential: `{
   "@context": [
-    "https://www.w3.org/2018/credentials/v1"
+    "https://www.w3.org/2018/credentials/v1",
+    "https://example.com/schemas/content-publish-credential/ld-context.json"
   ],
   "id": "did:example:publisher-did#credential-id",
   "type": ["VerifiableCredential", "ContentPublishCredential"],
