@@ -75,4 +75,5 @@ export interface JsonSchemaNode {
 export interface JsonSchema extends JsonSchemaNode {
   $schema: string;
   $id?: string;
+  [key: string]: any;
 }
