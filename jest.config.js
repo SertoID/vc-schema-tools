@@ -28,7 +28,4 @@ module.exports = {
   transform: {
     '\\.(ts)$': 'ts-jest'
   },
-  transformIgnorePatterns: [
-    "/node_modules/(?!deepdash-es|lodash-es)"
-  ]
 }
