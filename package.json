@@ -17,6 +17,7 @@
     "test": "jest",
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public",
+    "publish-if-new-version": "if [[ $(npm view vc-schema-tools@$npm_package_version) ]]; then echo \"Version $npm_package_version already published\"; else npm publish; fi",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
