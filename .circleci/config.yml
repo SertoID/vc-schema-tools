@@ -115,8 +115,23 @@ jobs:
           name: Restore yarn cache
           key: node-modules-{{ checksum "yarn.lock" }}
 
+  publish-npm:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ./
+      - restore_cache:
+          name: Restore yarn cache
+          key: node-modules-{{ checksum "yarn.lock" }}
+      - run:
+          name: Storing registry authentication
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+      - run:
+          name: Publishing to NPM if new version
+          command: npm run publish-if-new-version
+
 workflows:
-  build-lint-test:
+  build-lint-test-publish:
     jobs:
       - build
       - test:
@@ -131,3 +146,14 @@ workflows:
       - codecov:
           requires:
             - test
+      - publish-npm:
+          requires:
+            - build
+            - test
+            - lint
+            - prettier
+            - codecov
+          filters:
+            branches:
+              only:
+                - main
