@@ -128,7 +128,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
       - run:
           name: Publishing to NPM if new version
-          command: yarn publish-if-new-version
+          command: npm run publish-if-new-version
 
 workflows:
   build-lint-test-publish:
