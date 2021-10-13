@@ -724,22 +724,25 @@ export const EXAMPLE_VCS: { [key: string]: string } = {
   DiplomaCredential: `{
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
-    "https://beta.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json"
+    "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json"
   ],
   "type": ["VerifiableCredential", "DiplomaCredential"],
-  "issuer": "did:ethr:rinkeby:0x9fb04797cc0b1711c86b960105e0c3ed3f9cb749",
-  "issuanceDate": "2017-12-05T14:27:42Z",
+  "issuer": { "id": "did:web:beta.agent.serto.id" },
+  "issuanceDate": "2021-10-13T21:57:34.000Z",
   "credentialSubject": {
-    "id": "did:ethr:rinkeby:0x9fb04797cc0b1711c86b960105e0c3ed3f9cb749",
-    "title": "Diploma Credential",
+    "id": "did:ethr:0x02f4b0ceed160cccb47a66951baffac8a8ace75c33b761beb545e3ec99f44300fc",
     "degreeName": "Bachelor of Science in Examples",
-    "graduationDate": "2012-10-31",
     "universityName": "Example University",
-    "universityId": "did:example:c276e12ec21"
+    "graduationDate": "2012-10-31",
+    "universityId": "did:ethr:rinkeby:0x9fb04797cc0b1711c86b960105e0c3ed3f9cb749"
   },
   "credentialSchema": {
-    "id": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/json-schema.json",
+    "id": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/json-schema.json",
     "type": "JsonSchemaValidator2018"
+  },
+  "proof": {
+    "type": "JwtProof2020",
+    "jwt": "eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QifQ.eyJ2YyI6eyJjcmVkZW50aWFsU3ViamVjdCI6eyJ1bml2ZXJzaXR5SWQiOiJkaWQ6ZXRocjpyaW5rZWJ5OjB4OWZiMDQ3OTdjYzBiMTcxMWM4NmI5NjAxMDVlMGMzZWQzZjljYjc0OSIsInVuaXZlcnNpdHlOYW1lIjoiRXhhbXBsZSBVbml2ZXJzaXR5IiwiZ3JhZHVhdGlvbkRhdGUiOiIyMDEyLTEwLTMxIiwiZGVncmVlTmFtZSI6IkJhY2hlbG9yIG9mIFNjaWVuY2UgaW4gRXhhbXBsZXMifSwiQGNvbnRleHQiOlsiaHR0cHM6Ly93d3cudzMub3JnLzIwMTgvY3JlZGVudGlhbHMvdjEiLCJodHRwczovL2JldGEuYXBpLnNjaGVtYXMuc2VydG8uaWQvdjEvcHVibGljL2RpcGxvbWEtY3JlZGVudGlhbC8xLjIvbGQtY29udGV4dC5qc29uIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJEaXBsb21hQ3JlZGVudGlhbCJdfSwiY3JlZGVudGlhbFNjaGVtYSI6eyJpZCI6Imh0dHBzOi8vYmV0YS5hcGkuc2NoZW1hcy5zZXJ0by5pZC92MS9wdWJsaWMvZGlwbG9tYS1jcmVkZW50aWFsLzEuMi9qc29uLXNjaGVtYS5qc29uIiwidHlwZSI6Ikpzb25TY2hlbWFWYWxpZGF0b3IyMDE4In0sInN1YiI6ImRpZDpldGhyOjB4MDJmNGIwY2VlZDE2MGNjY2I0N2E2Njk1MWJhZmZhYzhhOGFjZTc1YzMzYjc2MWJlYjU0NWUzZWM5OWY0NDMwMGZjIiwibmJmIjoxNjM0MTYyMjU0LCJpc3MiOiJkaWQ6d2ViOmJldGEuYWdlbnQuc2VydG8uaWQifQ.GHlgeeT0BsqbAm5ZDKBoNLqE6wn5AoBywdscGK5mIV1OUAymkhxAjzeuJhFvsoW0kJl56Vq1JIVOAGqCsM6x5w"
   }
 }`,
   ContentPublishCredential: `{
