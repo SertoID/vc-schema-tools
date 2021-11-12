@@ -1,3 +1,6 @@
+import Ajv from "ajv";
+import addFormats from "ajv-formats";
+
 /** Fields valid in JSON-LD Context Plus that are not valid in JSON-LD Context. */
 export const contextPlusFields = [
   "@rootType",
@@ -33,28 +36,32 @@ export const baseVcJsonSchema = {
   required: ["@context", "type", "issuer", "issuanceDate", "credentialSubject"],
   properties: {
     "@context": {
-      type: ["string", "array", "object"],
+      anyOf: [{ type: "string" }, { type: "array" }, { type: "object" }],
     },
     id: {
       type: "string",
       format: "uri",
     },
     type: {
-      type: ["string", "array"],
-      items: {
-        type: "string",
-      },
+      anyOf: [{ type: "string" }, { type: "array", items: { type: "string" } }],
     },
     issuer: {
-      type: ["string", "object"],
-      format: "uri",
-      required: ["id"],
-      properties: {
-        id: {
+      anyOf: [
+        {
           type: "string",
           format: "uri",
         },
-      },
+        {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              format: "uri",
+            },
+          },
+        },
+      ],
     },
     issuanceDate: {
       type: "string",
@@ -87,4 +94,11 @@ export const baseVcJsonSchema = {
       },
     },
   },
+};
+
+export const getNewAjv = (): Ajv => {
+  const ajv = new Ajv();
+  ajv.addKeyword("$metadata");
+  addFormats(ajv);
+  return ajv;
 };

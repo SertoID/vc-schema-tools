@@ -1,14 +1,14 @@
 import "jest";
 import fetchMock from "jest-fetch-mock";
 import { validateVc } from "./validateVc";
-import { EXAMPLE_VCS, EXAMPLE_JSON_SCHEMAS } from "./examples";
+import { EXAMPLE_VCS, EXAMPLE_SCHEMAS } from "./examples";
 
 const vcString = EXAMPLE_VCS.DiplomaCredential;
 const vc = JSON.parse(EXAMPLE_VCS.DiplomaCredential);
 
 beforeEach(() => {
   fetchMock.enableMocks();
-  fetchMock.mockResponse(JSON.stringify(EXAMPLE_JSON_SCHEMAS.DiplomaCredential));
+  fetchMock.mockResponse(JSON.stringify(EXAMPLE_SCHEMAS.DiplomaCredential));
 });
 
 it("should fail on invalid JSON string", async () => {
@@ -65,7 +65,7 @@ it("should fail on missing `credentialSchema.id`", async () => {
   expect(warnings.length).toBe(1);
   expect(warnings[0]).toMatch(/"credentialSchema.id" property not found/);
   expect(errors.length).toBe(1);
-  expect(errors[0]).toMatch(/should have required property 'id'/);
+  expect(errors[0]).toMatch(/must have required property 'id'/);
 });
 
 it("should warn on failure to fetch JSON Schema", async () => {
@@ -95,7 +95,7 @@ it("should detect missing property from base VC schema even if no JSON Schema pr
   expect(warnings.length).toBe(1);
   expect(warnings[0]).toMatch(/No "credentialSchema" property found/);
   expect(errors.length).toBe(1);
-  expect(errors[0]).toMatch(/should have required property '@context'/);
+  expect(errors[0]).toMatch(/must have required property '@context'/);
 });
 
 it("should detect missing property from JSON Schema", async () => {
@@ -109,5 +109,5 @@ it("should detect missing property from JSON Schema", async () => {
   expect(valid).toBe(false);
   expect(warnings.length).toBe(0);
   expect(errors.length).toBe(1);
-  expect(errors[0]).toMatch(/should have required property 'universityName'/);
+  expect(errors[0]).toMatch(/must have required property 'universityName'/);
 });

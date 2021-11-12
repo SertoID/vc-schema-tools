@@ -1,4 +1,96 @@
-export const EXAMPLE_SCHEMAS: { [key: string]: string } = {
+import { JsonSchema } from "./types";
+
+export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
+  DiplomaCredential: {
+    $schema: "http://json-schema.org/draft-07/schema#",
+    $id: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/json-schema.json",
+    $comment:
+      '{"term": "DiplomaCredential", "@id": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json#"}',
+    $metadata: {
+      uris: {
+        jsonLdContext: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json",
+        jsonSchema: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/json-schema.json",
+      },
+      version: "1.0",
+      slug: "diploma-credential",
+      icon: "🎓",
+      discoverable: true,
+    },
+    title: "Diploma Credential",
+    description: "Credential attesting an alumni's degree from a university.",
+    type: "object",
+    required: ["@context", "type", "issuer", "issuanceDate", "credentialSubject"],
+    properties: {
+      "@context": {
+        anyOf: [{ type: "string" }, { type: "array" }, { type: "object" }],
+      },
+      id: { type: "string", format: "uri" },
+      type: {
+        anyOf: [{ type: "string" }, { type: "array", items: { type: "string" } }],
+      },
+      issuer: {
+        anyOf: [
+          {
+            type: "string",
+            format: "uri",
+          },
+          {
+            type: "object",
+            required: ["id"],
+            properties: {
+              id: {
+                type: "string",
+                format: "uri",
+              },
+            },
+          },
+        ],
+      },
+      issuanceDate: { type: "string", format: "date-time" },
+      credentialSubject: {
+        $comment: '{"term": "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject"}',
+        type: "object",
+        required: ["id", "universityName", "degreeName"],
+        properties: {
+          id: {
+            $comment: '{"term": "id", "@id": "@id"}',
+            title: "Alumni ID",
+            type: "string",
+            format: "uri",
+          },
+          universityId: {
+            $comment: '{"term": "universityId", "@id": "@id"}',
+            title: "University ID",
+            description: "",
+            type: "string",
+            format: "uri",
+          },
+          universityName: {
+            $comment: '{"term": "universityName", "@id": "https://schema.org/Text"}',
+            title: "University Name",
+            description: "",
+            type: "string",
+          },
+          degreeName: {
+            $comment: '{"term": "degreeName", "@id": "https://schema.org/Text"}',
+            title: "Degree Name",
+            description: 'E.g. "Bachelor of Arts in Astrophysics"',
+            type: "string",
+          },
+          graduationDate: {
+            $comment: '{"term": "degreeName", "@id": "https://schema.org/Date"}',
+            title: "Graduation Date",
+            description: "",
+            type: "string",
+            format: "date",
+          },
+        },
+      },
+    },
+  },
+};
+
+export const EXAMPLE_JSON_LD_SCHEMAS: { [key: string]: string } = {
   DiplomaCredential: `{
   "@context": {
     "@version": 1.1,
@@ -843,43 +935,4 @@ export const EXAMPLE_VCS: { [key: string]: string } = {
     "hi there": "these are the minimum required properties for all VCs - if you remove any, this VC won't validate"
   }
 }`,
-};
-
-export const EXAMPLE_JSON_SCHEMAS = {
-  DiplomaCredential: {
-    $schema: "http://json-schema.org/draft-07/schema#",
-    $id: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/json-schema.json",
-    title: "Diploma Credential",
-    description: "Credential attesting an alumni's degree from a university.",
-    type: "object",
-    required: ["@context", "type", "issuer", "issuanceDate", "credentialSubject"],
-    properties: {
-      "@context": { type: ["string", "array", "object"] },
-      id: { type: "string", format: "uri" },
-      type: { type: ["string", "array"], items: { type: "string" } },
-      issuer: {
-        type: ["string", "object"],
-        format: "uri",
-        required: ["id"],
-        properties: {
-          id: {
-            type: "string",
-            format: "uri",
-          },
-        },
-      },
-      issuanceDate: { type: "string", format: "date-time" },
-      credentialSubject: {
-        type: "object",
-        required: ["id", "universityName", "degreeName"],
-        properties: {
-          id: { title: "Alumni ID", type: "string", format: "uri" },
-          universityId: { title: "University ID", description: "", type: "string", format: "uri" },
-          universityName: { title: "University Name", description: "", type: "string" },
-          degreeName: { title: "Degree Name", description: 'E.g. "Bachelor of Arts in Astrophysics"', type: "string" },
-          graduationDate: { title: "Graduation Date", description: "", type: "string", format: "date" },
-        },
-      },
-    },
-  },
 };
