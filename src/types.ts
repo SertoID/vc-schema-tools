@@ -1,12 +1,16 @@
 /** Quick n dirty VC type with properties we need, the full W3C VC spec has much much more. */
 export interface VC {
   "@context": string | string[];
+  id?: string;
   type: string[];
   issuer: string | { id: string; [key: string]: any };
   issuanceDate: string;
   expirationDate?: string;
   credentialSubject: { [key: string]: any };
-  proof: { jwt: string };
+  proof?: {
+    type?: string;
+    jwt: string;
+  };
   credentialSchema?: {
     id: string;
     type: string;

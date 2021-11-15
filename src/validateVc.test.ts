@@ -3,8 +3,8 @@ import fetchMock from "jest-fetch-mock";
 import { validateVc } from "./validateVc";
 import { EXAMPLE_VCS, EXAMPLE_SCHEMAS } from "./examples";
 
-const vcString = EXAMPLE_VCS.DiplomaCredential;
-const vc = JSON.parse(EXAMPLE_VCS.DiplomaCredential);
+const vc = EXAMPLE_VCS.DiplomaCredential;
+const vcString = JSON.stringify(vc);
 
 beforeEach(() => {
   fetchMock.enableMocks();
@@ -42,7 +42,7 @@ it("should warn on missing `credentialSchema`", async () => {
 });
 it("should warn on unsupported `credentialSchema.type`", async () => {
   const { valid, warnings, errors } = await validateVc({
-    ...vc,
+    ...(vc as any),
     credentialSchema: {
       ...vc.credentialSchema,
       type: "SomethingElse",
@@ -55,7 +55,7 @@ it("should warn on unsupported `credentialSchema.type`", async () => {
 });
 it("should fail on missing `credentialSchema.id`", async () => {
   const { valid, warnings, errors } = await validateVc({
-    ...vc,
+    ...(vc as any),
     credentialSchema: {
       ...vc.credentialSchema,
       id: undefined,
@@ -87,7 +87,7 @@ it("should warn on non-200 response when fetching JSON Schema", async () => {
 
 it("should detect missing property from base VC schema even if no JSON Schema provided", async () => {
   const { valid, warnings, errors } = await validateVc({
-    ...vc,
+    ...(vc as any),
     credentialSchema: undefined,
     "@context": undefined,
   });

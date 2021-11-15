@@ -34,7 +34,9 @@ export class VcSchema {
     }
 
     try {
-      this.jsonLdContext = schemasToContext([jsonSchema]);
+      let vocabUri = this.jsonSchema.$metadata?.uris?.jsonLdContext;
+      vocabUri = vocabUri && vocabUri + "#";
+      this.jsonLdContext = jsonSchemaToNestedContext(this.jsonSchema, vocabUri);
     } catch (err) {
       throw Error("Failed to generate JSON-LD Context from input: " + err.message);
     }
