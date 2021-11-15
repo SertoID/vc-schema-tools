@@ -2,7 +2,7 @@
 
 import { ValidateFunction } from "ajv";
 import { schemasToContext } from "@transmute/jsonld-schema";
-import { JsonSchema } from "./types";
+import { JsonSchema, JsonSchemaNode } from "./types";
 import { getNewAjv } from "./helpers";
 
 const ajv = getNewAjv();
@@ -120,4 +120,37 @@ export class VcSchema {
     }
     return vc;
   }
+}
+
+function getLdTerm(jsonSchemaNode: JsonSchemaNode): string | void {
+  try {
+    return JSON.parse(jsonSchemaNode.$comment || "{}").term;
+  } catch {
+    return;
+  }
+}
+
+function jsonSchemaToNestedContext(node: JsonSchemaNode, vocab?: string): { [key: string]: any } {
+  const ldContext = schemasToContext([node]);
+
+  if (vocab) {
+    ldContext["@context"]["@vocab"] = vocab;
+  } else {
+    delete ldContext["@context"]["@vocab"];
+  }
+
+  // `schemasToContext` doesn't natively support nested properties, so here we loop through and see if any have nested properties and recursively call `schemasToContext` on them
+  const ldTerm = getLdTerm(node);
+  for (const propName in node.properties) {
+    const prop = node.properties[propName];
+    const propLdTerm = getLdTerm(prop);
+    if (ldTerm && propLdTerm && prop.type === "object" && prop.properties) {
+      ldContext["@context"][ldTerm]["@context"][propLdTerm] = {
+        ...ldContext["@context"][ldTerm]["@context"][propLdTerm],
+        ...jsonSchemaToNestedContext(prop)["@context"][propLdTerm],
+      };
+    }
+  }
+
+  return ldContext;
 }
