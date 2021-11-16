@@ -4,13 +4,13 @@ import { baseVcJsonSchema } from "./helpers";
 export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   DiplomaCredential: {
     $schema: "http://json-schema.org/draft-07/schema#",
-    $id: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/json-schema.json",
+    $id: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/json-schema.json",
     $comment:
-      '{"term": "DiplomaCredential", "@id": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json#"}',
+      '{"term": "DiplomaCredential", "@id": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json#"}',
     $metadata: {
       uris: {
-        jsonLdContext: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json",
-        jsonSchema: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/json-schema.json",
+        jsonLdContext: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json",
+        jsonSchema: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/json-schema.json",
       },
       version: "1.0",
       slug: "diploma-credential",
@@ -296,6 +296,47 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
       },
     },
   },
+  TestWithReferences: {
+    $schema: "http://json-schema.org/draft-07/schema#",
+    $id: "https://example.com/schemas/test-with-references/json-schema.json",
+    $comment:
+      '{"term": "TestWithReferences", "@id": "https://example.com/schemas/test-with-references/ld-context.json#"}',
+    $metadata: {
+      uris: {
+        jsonLdContext: "https://example.com/schemas/test-with-references/ld-context.json",
+        jsonSchema: "https://example.com/schemas/test-with-references/json-schema.json",
+      },
+      version: "1.0",
+      slug: "test-with-references",
+      icon: "🧪",
+      discoverable: true,
+    },
+    title: "Test Credential with references",
+    description: "A test credential using JSON Schema references.",
+
+    ...baseVcJsonSchema,
+
+    properties: {
+      ...baseVcJsonSchema.properties,
+      credentialSubject: {
+        $comment: '{"term": "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject"}',
+        type: "object",
+        required: ["name", "address"],
+        properties: {
+          name: {
+            $comment: '{"term": "name", "@id": "https://schema.org/name"}',
+            title: "Name",
+            type: "string",
+          },
+          address: {
+            $comment: '{"term": "address", "@id": "https://schema.org/address"}',
+            $ref: "https://w3id.org/traceability/schemas/PostalAddress.json",
+            title: "Address",
+          },
+        },
+      },
+    },
+  },
   "[no schema]": {
     $schema: "http://json-schema.org/draft-07/schema#",
     ...baseVcJsonSchema,
@@ -310,8 +351,8 @@ export const EXAMPLE_JSON_LD_SCHEMAS: { [key: string]: string } = {
     "@title": "Diploma Credential",
     "@metadata": {
       "uris": {
-        "jsonLdContext": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json",
-        "jsonSchema": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/json-schema.json"
+        "jsonLdContext": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json",
+        "jsonSchema": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/json-schema.json"
       },
       "version": "1.0",
       "slug": "diploma-credential",
@@ -320,7 +361,7 @@ export const EXAMPLE_JSON_LD_SCHEMAS: { [key: string]: string } = {
     },
     "w3ccred": "https://www.w3.org/2018/credentials#",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-    "schema-id": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/ld-context.json#",
+    "schema-id": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json#",
     "DiplomaCredential": {
       "@id": "schema-id",
       "@contains": "credentialSubject"
@@ -904,6 +945,25 @@ export const EXAMPLE_VCS: { [key: string]: VC } = {
           type: "Person",
           name: "Joe Reporter",
         },
+      },
+    },
+  },
+  TestWithReferences: {
+    "@context": ["https://www.w3.org/2018/credentials/v1"],
+    type: ["VerifiableCredential"],
+    issuer: "did:example:some-did",
+    issuanceDate: "2017-12-05T14:27:42Z",
+    credentialSchema: {
+      id: "https://example.com/schemas/test-with-references/json-schema.json",
+      type: "JsonSchemaValidator2018",
+    },
+    credentialSubject: {
+      name: "John Credential",
+      address: {
+        streetAddress: "123 Identity Street",
+        addressLocality: "Sovereignia",
+        addressRegion: "SG",
+        addressCountry: "USA",
       },
     },
   },

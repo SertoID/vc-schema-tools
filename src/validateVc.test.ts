@@ -111,3 +111,34 @@ it("should detect missing property from JSON Schema", async () => {
   expect(errors.length).toBe(1);
   expect(errors[0]).toMatch(/must have required property 'universityName'/);
 });
+
+it("should handle a schema with references", async () => {
+  fetchMock.mockOnce(JSON.stringify(EXAMPLE_SCHEMAS.TestWithReferences));
+  fetchMock.dontMockIf(/https:\/\/w3id.org\/traceability/);
+
+  const { valid, warnings, errors } = await validateVc(EXAMPLE_VCS.TestWithReferences);
+  expect(warnings.length).toBe(0);
+  expect(errors.length).toBe(0);
+  expect(valid).toBe(true);
+});
+
+it("should fail on errors in a referenced schema", async () => {
+  fetchMock.mockOnce(JSON.stringify(EXAMPLE_SCHEMAS.TestWithReferences));
+  fetchMock.dontMockIf(/https:\/\/w3id.org\/traceability/);
+
+  const vc = {
+    ...EXAMPLE_VCS.TestWithReferences,
+    credentialSubject: {
+      ...EXAMPLE_VCS.TestWithReferences.credentialSubject,
+      address: {
+        ...EXAMPLE_VCS.TestWithReferences.credentialSubject.address,
+        addressCountry: 5,
+      },
+    },
+  };
+  const { valid, warnings, errors } = await validateVc(vc);
+  expect(valid).toBe(false);
+  expect(warnings.length).toBe(0);
+  expect(errors.length).toBe(1);
+  expect(errors[0]).toMatch(/must be string.*addressCountry/);
+});
