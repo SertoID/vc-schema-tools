@@ -1,12 +1,16 @@
 /** Quick n dirty VC type with properties we need, the full W3C VC spec has much much more. */
 export interface VC {
   "@context": string | string[];
+  id?: string;
   type: string[];
   issuer: string | { id: string; [key: string]: any };
   issuanceDate: string;
   expirationDate?: string;
   credentialSubject: { [key: string]: any };
-  proof: { jwt: string };
+  proof?: {
+    type?: string;
+    jwt: string;
+  };
   credentialSchema?: {
     id: string;
     type: string;
@@ -15,56 +19,16 @@ export interface VC {
 
 export interface DefaultSchemaMetadata {
   uris?: {
-    jsonLdContextPlus?: string;
     jsonLdContext?: string;
     jsonSchema?: string;
   };
+  [key: string]: any;
 }
-
-export interface LdContextPlus<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> {
-  "@context": LdContextPlusRootNode<MetadataType>;
-}
-
-export interface LdContextPlusRootNode<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> {
-  "@rootType": string;
-  "@id"?: string;
-  "@title"?: string;
-  "@description"?: string;
-  "@metadata"?: MetadataType;
-  [key: string]: LdContextPlusNode<MetadataType> | MetadataType | number | string | undefined;
-}
-
-export interface LdContextPlusInnerNode<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> {
-  "@id": string;
-  "@contains"?: string;
-  "@replaceWith"?: string;
-  "@title"?: string;
-  "@description"?: string;
-  "@required"?: boolean;
-  "@metadata"?: MetadataType;
-  "@context"?: { [key: string]: LdContextPlusNode<MetadataType> };
-}
-
-export interface LdContextPlusLeafNode<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> {
-  "@id": string;
-  "@type": string;
-  "@dataType"?: string;
-  "@format"?: string;
-  "@title"?: string;
-  "@description"?: string;
-  "@required"?: boolean;
-  "@metadata"?: MetadataType;
-  "@items"?: JsonSchemaNode;
-}
-
-export type LdContextPlusNodeKey = keyof LdContextPlusLeafNode | keyof LdContextPlusInnerNode;
-
-export type LdContextPlusNode<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> =
-  | LdContextPlusInnerNode<MetadataType>
-  | LdContextPlusLeafNode<MetadataType>;
 
 export interface JsonSchemaNode {
-  type: string | string[];
+  $comment?: string;
+  type?: string | string[];
+  anyOf?: JsonSchemaNode[];
   properties?: { [key: string]: JsonSchemaNode };
   title?: string;
   description?: string;
@@ -72,8 +36,9 @@ export interface JsonSchemaNode {
   items?: JsonSchemaNode;
   required?: string[];
 }
-export interface JsonSchema extends JsonSchemaNode {
+export interface JsonSchema<MetadataType extends DefaultSchemaMetadata = DefaultSchemaMetadata> extends JsonSchemaNode {
   $schema: string;
   $id?: string;
+  $metadata?: MetadataType;
   [key: string]: any;
 }

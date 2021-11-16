@@ -1,8 +1,8 @@
-import Ajv from "ajv";
+import { ValidateFunction } from "ajv";
 import "cross-fetch/polyfill";
 import { Response } from "cross-fetch";
 import { VC } from "./types";
-import { baseVcJsonSchema } from "./helpers";
+import { baseVcJsonSchema, getNewAjv } from "./helpers";
 
 export async function validateVc(
   _vc: string | VC,
@@ -64,9 +64,9 @@ export async function validateVc(
     }
   }
 
-  let validator: Ajv.ValidateFunction | undefined;
+  let validator: ValidateFunction | undefined;
   try {
-    const ajv = new Ajv();
+    const ajv = getNewAjv();
     validator = ajv.compile(jsonSchema || baseVcJsonSchema);
   } catch (err) {
     errors.push(
