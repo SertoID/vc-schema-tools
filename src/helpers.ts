@@ -96,8 +96,23 @@ export const baseVcJsonSchema = {
   },
 };
 
+async function loadSchema(uri: string) {
+  const res = await fetch(uri);
+  if (res.status >= 400) {
+    throw new Error("Loading error: " + res.status);
+  }
+  const json = await res.json();
+
+  // workaround for https://github.com/w3c-ccg/traceability-vocab/issues/219
+  if (json.$schema === "https://json-schema.org/draft-07/schema#") {
+    json.$schema = "http://json-schema.org/draft-07/schema#";
+  }
+
+  return json;
+}
+
 export const getNewAjv = (): Ajv => {
-  const ajv = new Ajv();
+  const ajv = new Ajv({ loadSchema });
   ajv.addKeyword("$metadata");
   addFormats(ajv);
   return ajv;

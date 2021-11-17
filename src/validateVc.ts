@@ -67,10 +67,10 @@ export async function validateVc(
   let validator: ValidateFunction | undefined;
   try {
     const ajv = getNewAjv();
-    validator = ajv.compile(jsonSchema || baseVcJsonSchema);
+    validator = await ajv.compileAsync(jsonSchema || baseVcJsonSchema);
   } catch (err) {
     errors.push(
-      `Failed to generate JSON Schema from response from ${vc.credentialSchema?.id}: ${err.message}. Could not validate.`,
+      `Failed to compile JSON Schema from response from ${vc.credentialSchema?.id}: ${err.message}. Could not validate.`,
     );
     valid = false;
   }

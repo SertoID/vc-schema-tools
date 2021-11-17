@@ -11,7 +11,8 @@ export class VcSchema {
   public jsonSchema: JsonSchema;
   public jsonLdContext?: { [key: string]: any };
 
-  private jsonSchemaValidate: ValidateFunction;
+  private jsonSchemaValidate: Promise<ValidateFunction>;
+  private initError?: Error;
   private debugMode?: boolean;
 
   constructor(jsonSchema: string | JsonSchema, debugMode?: boolean) {
@@ -27,19 +28,31 @@ export class VcSchema {
     }
 
     try {
-      ajv.removeSchema(this.jsonSchema?.["$id"]);
-      this.jsonSchemaValidate = ajv.compile(this.jsonSchema);
-    } catch (err) {
-      throw Error("AJV failed to generate validator from supplied JSON Schema: " + err.message);
-    }
-
-    try {
       let vocabUri = this.jsonSchema.$metadata?.uris?.jsonLdContext;
       vocabUri = vocabUri && vocabUri + "#";
       this.jsonLdContext = jsonSchemaToNestedContext(this.jsonSchema, vocabUri);
     } catch (err) {
       throw Error("Failed to generate JSON-LD Context from input: " + err.message);
     }
+
+    this.jsonSchemaValidate = this.initValidator();
+  }
+
+  private initValidator(): Promise<ValidateFunction> {
+    // unusual use-case, but it makes wrapping async/await function in a promise easier:
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      try {
+        ajv.removeSchema(this.jsonSchema?.["$id"]);
+        const validator = await ajv.compileAsync(this.jsonSchema);
+        resolve(validator);
+      } catch (err) {
+        this.initError = Error("AJV failed to generate validator from supplied JSON Schema: " + err.message);
+        console.error(this.initError, "JSON Schema:", this.jsonSchema);
+        reject(this.initError);
+        return;
+      }
+    });
   }
 
   public getJsonLdContextString(prettyPrint?: boolean): string {
@@ -50,29 +63,39 @@ export class VcSchema {
     return JSON.stringify(this.jsonSchema, null, prettyPrint ? 2 : undefined);
   }
 
-  public async validateVc(
-    vc: string | { [key: string]: any },
-    cb: (isValid: boolean | null, message?: string) => any,
-  ): Promise<void> {
+  public async validateVc(vc: string | { [key: string]: any }): Promise<{ isValid: boolean | null; message?: string }> {
     let vcObj = vc;
     if (typeof vc === "string") {
       try {
         vcObj = JSON.parse(vc);
       } catch (err) {
-        return cb(false, "VC is invalid: Invalid JSON: " + err.message);
+        return {
+          isValid: false,
+          message: "VC is invalid: Invalid JSON: " + err.message,
+        };
       }
     }
 
-    const isValid = await this.jsonSchemaValidate(vcObj);
+    let validator: ValidateFunction;
+    try {
+      validator = await this.jsonSchemaValidate;
+    } catch (err) {
+      return {
+        isValid: false,
+        message: err.message,
+      };
+    }
+
+    const isValid = await validator(vcObj);
 
     let message: string;
-    if (this.jsonSchemaValidate.errors) {
-      message = "VC is invalid: " + JSON.stringify(this.jsonSchemaValidate.errors);
+    if (validator.errors) {
+      message = "VC is invalid: " + JSON.stringify(validator.errors);
     } else {
       message = "VC is valid according to schema";
     }
 
-    cb(isValid, message);
+    return { isValid, message };
   }
 
   public openGoogleJsonLdValidatorPage(vc: any): void {
