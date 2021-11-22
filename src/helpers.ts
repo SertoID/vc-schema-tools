@@ -114,6 +114,7 @@ async function loadSchema(uri: string) {
 export const getNewAjv = (): Ajv => {
   const ajv = new Ajv({ loadSchema });
   ajv.addKeyword("$metadata");
+  ajv.addKeyword("$linkedData");
   addFormats(ajv);
   return ajv;
 };

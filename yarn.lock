@@ -2898,10 +2898,10 @@
     "@svgr/plugin-svgo" "^5.4.0"
     loader-utils "^2.0.0"
 
-"@transmute/jsonld-schema@^0.7.0-unstable.24":
-  version "0.7.0-unstable.24"
-  resolved "https://registry.yarnpkg.com/@transmute/jsonld-schema/-/jsonld-schema-0.7.0-unstable.24.tgz#dfb8a13cf6ae8e6f24157ef171a829a7af4f371b"
-  integrity sha512-OypuFOLhyNG0kBkMM6xBa0jH92eAnXFr1oOc87clx5OM8HCuAdkyxqYG2oAdBoz50pHY6a9KcD35f2IQYcAI0g==
+"@transmute/jsonld-schema@^0.7.0-unstable.28":
+  version "0.7.0-unstable.28"
+  resolved "https://registry.yarnpkg.com/@transmute/jsonld-schema/-/jsonld-schema-0.7.0-unstable.28.tgz#bb5e32e7c13031da5937a9033c320f5a8e3506c5"
+  integrity sha512-yR2voYGv0LaSUUeFtAecUGI1wW0NUxHWVrSsk6aDEWuzT6mh47vXWC3GhkjsQ6NNyouAZsngd0NdD8vpvcqCMg==
   dependencies:
     ajv "^8.6.1"
     genson-js "0.0.5"

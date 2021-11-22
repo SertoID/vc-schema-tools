@@ -5,8 +5,10 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   DiplomaCredential: {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/json-schema.json",
-    $comment:
-      '{"term": "DiplomaCredential", "@id": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json#"}',
+    $linkedData: {
+      term: "DiplomaCredential",
+      "@id": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json#",
+    },
     $metadata: {
       uris: {
         jsonLdContext: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json",
@@ -25,37 +27,37 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
     properties: {
       ...baseVcJsonSchema.properties,
       credentialSubject: {
-        $comment: '{"term": "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject"}',
+        $linkedData: { term: "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject" },
         type: "object",
         required: ["id", "universityName", "degreeName"],
         properties: {
           id: {
-            $comment: '{"term": "id", "@id": "@id"}',
+            $linkedData: { term: "id", "@id": "@id" },
             title: "Alumni ID",
             type: "string",
             format: "uri",
           },
           universityId: {
-            $comment: '{"term": "universityId", "@id": "@id"}',
+            $linkedData: { term: "universityId", "@id": "@id" },
             title: "University ID",
             description: "",
             type: "string",
             format: "uri",
           },
           universityName: {
-            $comment: '{"term": "universityName", "@id": "https://schema.org/Text"}',
+            $linkedData: { term: "universityName", "@id": "https://schema.org/Text" },
             title: "University Name",
             description: "",
             type: "string",
           },
           degreeName: {
-            $comment: '{"term": "degreeName", "@id": "https://schema.org/Text"}',
+            $linkedData: { term: "degreeName", "@id": "https://schema.org/Text" },
             title: "Degree Name",
             description: 'E.g. "Bachelor of Arts in Astrophysics"',
             type: "string",
           },
           graduationDate: {
-            $comment: '{"term": "graduationDate", "@id": "https://schema.org/Date"}',
+            $linkedData: { term: "graduationDate", "@id": "https://schema.org/Date" },
             title: "Graduation Date",
             description: "",
             type: "string",
@@ -68,8 +70,10 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   ContentPublishCredential: {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "https://example.com/schemas/content-publish-credential/ld-context.json",
-    $comment:
-      '{"term": "ContentPublishCredential", "@id": "https://example.com/schemas/content-publish-credential/ld-context.json#"}',
+    $linkedData: {
+      term: "ContentPublishCredential",
+      "@id": "https://example.com/schemas/content-publish-credential/ld-context.json#",
+    },
     $metadata: {
       uris: {
         jsonLdContext: "https://example.com/schemas/content-publish-credential/ld-context.json",
@@ -88,71 +92,71 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
     properties: {
       ...baseVcJsonSchema.properties,
       credentialSubject: {
-        $comment: '{"term": "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject"}',
+        $linkedData: { term: "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject" },
         type: "object",
         required: ["id", "publishedContent"],
         properties: {
           id: {
-            $comment: '{"term": "id", "@id": "@id"}',
+            $linkedData: { term: "id", "@id": "@id" },
             description: "Publisher DID",
             type: "string",
             format: "uri",
           },
           publishedContent: {
-            $comment: '{"term": "publishedContent", "@id": "publishedContent"}',
+            $linkedData: { term: "publishedContent", "@id": "publishedContent" },
             type: "object",
             required: ["id", "headline", "url", "datePublished", "publisher"],
             properties: {
               id: {
-                $comment: '{"term": "id", "@id": "@id"}',
+                $linkedData: { term: "id", "@id": "@id" },
                 description: "Globally unique identifier for this piece of content across all versions",
                 type: "string",
               },
               versionId: {
-                $comment: '{"term": "versionId", "@id": "http://schema.org/version"}',
+                $linkedData: { term: "versionId", "@id": "http://schema.org/version" },
                 description: "Globally unique identifier that refers to this version of this piece of content",
                 type: "string",
               },
               headline: {
-                $comment: '{"term": "headline", "@id": "https://schema.org/headline"}',
+                $linkedData: { term: "headline", "@id": "https://schema.org/headline" },
                 type: "string",
               },
               description: {
-                $comment: '{"term": "description", "@id": "https://schema.org/description"}',
+                $linkedData: { term: "description", "@id": "https://schema.org/description" },
                 type: "string",
               },
               url: {
-                $comment: '{"term": "url", "@id": "https://schema.org/URL"}',
+                $linkedData: { term: "url", "@id": "https://schema.org/URL" },
                 type: "string",
                 format: "uri",
               },
               datePublished: {
-                $comment: '{"term": "datePublished", "@id": "https://schema.org/datePublished"}',
+                $linkedData: { term: "datePublished", "@id": "https://schema.org/datePublished" },
                 type: "string",
                 format: "date-time",
               },
               dateModified: {
-                $comment: '{"term": "dateModified", "@id": "https://schema.org/dateModified"}',
+                $linkedData: { term: "dateModified", "@id": "https://schema.org/dateModified" },
                 type: "string",
                 format: "date-time",
               },
               publisher: {
-                $comment: '{"term": "publisher", "@id": "https://schema.org/publisher"}',
+                $linkedData: { term: "publisher", "@id": "https://schema.org/publisher" },
                 type: "object",
                 required: ["name", "url"],
                 properties: {
                   id: {
-                    $comment: '{"term": "id", "@id": "@id"}',
+                    $linkedData: { term: "id", "@id": "@id" },
                     description: "Publisher DID or other unique identifier URI",
                     type: "string",
                     format: "uri",
                   },
                   name: {
-                    $comment: '{"term": "name", "@id": "http://schema.org/name"}',
+                    $linkedData: { term: "name", "@id": "http://schema.org/name" },
                     type: "string",
                   },
                   url: {
-                    $comment: '{"term": "url", "@id": "https://schema.org/URL"}',
+                    $linkedData: { term: "url", "@id": "https://schema.org/URL" },
                     description: "Publisher homepage",
                     type: "string",
                     format: "uri",
@@ -160,41 +164,41 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
                 },
               },
               author: {
-                $comment: '{"term": "author", "@id": "https://schema.org/author"}',
+                $linkedData: { term: "author", "@id": "https://schema.org/author" },
                 type: "object",
                 required: ["name"],
                 properties: {
                   id: {
-                    $comment: '{"term": "id", "@id": "@id"}',
+                    $linkedData: { term: "id", "@id": "@id" },
                     description: "Author DID or other unique identifier URI",
                     type: "string",
                     format: "uri",
                   },
                   name: {
-                    $comment: '{"term": "name", "@id": "http://schema.org/name"}',
+                    $linkedData: { term: "name", "@id": "http://schema.org/name" },
                     type: "string",
                   },
                 },
               },
               keywords: {
-                $comment: '{"term": "keywords", "@id": "http://schema.org/keywords"}',
+                $linkedData: { term: "keywords", "@id": "http://schema.org/keywords" },
                 description: "Comma-separated list of tags/keywords",
                 type: "string",
               },
               image: {
-                $comment: '{"term": "image", "@id": "http://schema.org/image"}',
+                $linkedData: { term: "image", "@id": "http://schema.org/image" },
                 type: "string",
                 format: "uri",
               },
               rawContentUrl: {
-                $comment: '{"term": "rawContentUrl", "@id": "http://schema.org/URL"}',
+                $linkedData: { term: "rawContentUrl", "@id": "http://schema.org/URL" },
                 description:
                   "URL where raw, machine-readable, full text of content can be found (may require authentication)",
                 type: "string",
                 format: "uri",
               },
               rawContentHash: {
-                $comment: '{"term": "rawContentHash", "@id": "http://schema.org/Text"}',
+                $linkedData: { term: "rawContentHash", "@id": "http://schema.org/Text" },
                 description: "Keccak-256 hash of content at `rawContentUrl`",
                 type: "string",
               },
@@ -207,7 +211,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   TestCredential: {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "https://example.com/schemas/test-credential/json-schema.json",
-    $comment: '{"term": "TestCredential", "@id": "https://example.com/schemas/test-credential/ld-context.json#"}',
+    $linkedData: { term: "TestCredential", "@id": "https://example.com/schemas/test-credential/ld-context.json#" },
     $metadata: {
       uris: {
         jsonLdContext: "https://example.com/schemas/test-credential/ld-context.json",
@@ -226,69 +230,69 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
     properties: {
       ...baseVcJsonSchema.properties,
       credentialSubject: {
-        $comment: '{"term": "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject"}',
+        $linkedData: { term: "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject" },
         type: "object",
         required: ["id", "headline", "url", "date"],
         properties: {
           id: {
-            $comment: '{"term": "id", "@id": "@id"}',
+            $linkedData: { term: "id", "@id": "@id" },
             title: "Credential Subject ID",
             description: "Globally unique identifier for the piece of content this credential is about",
             type: "string",
             format: "uri",
           },
           headline: {
-            $comment: '{"term": "headline", "@id": "https://schema.org/Text"}',
+            $linkedData: { term: "headline", "@id": "https://schema.org/Text" },
             title: "Headline",
             type: "string",
           },
           description: {
-            $comment: '{"term": "description", "@id": "https://schema.org/Text"}',
+            $linkedData: { term: "description", "@id": "https://schema.org/Text" },
             title: "Description",
             type: "string",
           },
           url: {
-            $comment: '{"term": "url", "@id": "https://schema.org/URL"}',
+            $linkedData: { term: "url", "@id": "https://schema.org/URL" },
             title: "URL",
             type: "string",
             format: "uri",
           },
           dateTime: {
-            $comment: '{"term": "dateTime", "@id": "https://schema.org/DateTime"}',
+            $linkedData: { term: "dateTime", "@id": "https://schema.org/DateTime" },
             title: "Date & Time",
             type: "string",
             format: "date-time",
           },
           date: {
-            $comment: '{"term": "date", "@id": "https://schema.org/Date"}',
+            $linkedData: { term: "date", "@id": "https://schema.org/Date" },
             title: "Date",
             type: "string",
             format: "date",
           },
           author: {
-            $comment: '{"term": "author", "@id": "author"}',
+            $linkedData: { term: "author", "@id": "author" },
             title: "Author",
             type: "object",
             required: ["name"],
             properties: {
               id: {
-                $comment: '{"term": "id", "@id": "publisher-id"}',
+                $linkedData: { term: "id", "@id": "publisher-id" },
                 description: "Author DID or other unique identifier URI",
                 type: "string",
               },
               name: {
-                $comment: '{"term": "name", "@id": "author-name"}',
+                $linkedData: { term: "name", "@id": "author-name" },
                 type: "string",
               },
             },
           },
           opinion: {
-            $comment: '{"term": "opinion", "@id": "https://schema.org/Boolean"}',
+            $linkedData: { term: "opinion", "@id": "https://schema.org/Boolean" },
             title: "Opinion",
             type: "boolean",
           },
           numRevisions: {
-            $comment: '{"term": "numRevisions", "@id": "https://schema.org/Number"}',
+            $linkedData: { term: "numRevisions", "@id": "https://schema.org/Number" },
             title: "Number of Revisions",
             type: "number",
           },
@@ -299,8 +303,10 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   TestWithReferences: {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "https://example.com/schemas/test-with-references/json-schema.json",
-    $comment:
-      '{"term": "TestWithReferences", "@id": "https://example.com/schemas/test-with-references/ld-context.json#"}',
+    $linkedData: {
+      term: "TestWithReferences",
+      "@id": "https://example.com/schemas/test-with-references/ld-context.json#",
+    },
     $metadata: {
       uris: {
         jsonLdContext: "https://example.com/schemas/test-with-references/ld-context.json",
@@ -319,17 +325,17 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
     properties: {
       ...baseVcJsonSchema.properties,
       credentialSubject: {
-        $comment: '{"term": "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject"}',
+        $linkedData: { term: "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject" },
         type: "object",
         required: ["name", "address"],
         properties: {
           name: {
-            $comment: '{"term": "name", "@id": "https://schema.org/name"}',
+            $linkedData: { term: "name", "@id": "https://schema.org/name" },
             title: "Name",
             type: "string",
           },
           address: {
-            $comment: '{"term": "address", "@id": "https://schema.org/address"}',
+            $linkedData: { term: "address", "@id": "https://schema.org/address" },
             $ref: "https://w3id.org/traceability/schemas/PostalAddress.json",
             title: "Address",
           },
