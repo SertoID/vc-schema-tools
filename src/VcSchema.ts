@@ -6,6 +6,7 @@ import { JsonSchema, JsonSchemaNode } from "./types";
 import { getNewAjv } from "./helpers";
 
 const ajv = getNewAjv();
+let schemaCompilationInProgress: Promise<unknown> | undefined;
 
 export class VcSchema {
   public jsonSchema: JsonSchema;
@@ -41,8 +42,16 @@ export class VcSchema {
   private initValidator(): Promise<ValidateFunction> {
     // unusual use-case, but it makes wrapping async/await function in a promise easier:
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
+    const promise = new Promise<ValidateFunction>(async (resolve, reject) => {
       try {
+        // Since we're sharing a global instance of ajv (ideal for caching compiled schemas and references), need to do this check to avoid race condition where there are multiple near-simultaneous async calls to compile the same schema, which result in "schema with key or id already exists" error. This will only solve a race condition of two compilations (we'd need some kind of queue to handle perfectly for any number) but it's already an edge-case caused by some helpers running in storybook stories so this will do for now.
+        if (schemaCompilationInProgress) {
+          try {
+            await schemaCompilationInProgress;
+          } catch {
+            // we don't care about any error, we just want to wait til previous compilation is complete before continuing
+          }
+        }
         ajv.removeSchema(this.jsonSchema?.["$id"]);
         const validator = await ajv.compileAsync(this.jsonSchema);
         resolve(validator);
@@ -53,6 +62,8 @@ export class VcSchema {
         return;
       }
     });
+    schemaCompilationInProgress = promise;
+    return promise;
   }
 
   public getJsonLdContextString(prettyPrint?: boolean): string {
@@ -147,14 +158,6 @@ export class VcSchema {
   }
 }
 
-function getLdTerm(jsonSchemaNode: JsonSchemaNode): string | void {
-  try {
-    return JSON.parse(jsonSchemaNode.$comment || "{}").term;
-  } catch {
-    return;
-  }
-}
-
 function jsonSchemaToNestedContext(node: JsonSchemaNode, vocab?: string): { [key: string]: any } {
   const ldContext = schemasToContext([node]);
 
@@ -165,10 +168,10 @@ function jsonSchemaToNestedContext(node: JsonSchemaNode, vocab?: string): { [key
   }
 
   // `schemasToContext` doesn't natively support nested properties, so here we loop through and see if any have nested properties and recursively call `schemasToContext` on them
-  const ldTerm = getLdTerm(node);
+  const ldTerm = node.$linkedData?.term;
   for (const propName in node.properties) {
     const prop = node.properties[propName];
-    const propLdTerm = getLdTerm(prop);
+    const propLdTerm = prop.$linkedData?.term;
     if (ldTerm && propLdTerm && prop.type === "object" && prop.properties) {
       ldContext["@context"][ldTerm]["@context"][propLdTerm] = {
         ...ldContext["@context"][ldTerm]["@context"][propLdTerm],

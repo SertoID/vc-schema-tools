@@ -27,7 +27,10 @@ export interface DefaultSchemaMetadata {
 
 export interface JsonSchemaNode {
   $ref?: string;
-  $comment?: string;
+  $linkedData?: {
+    term: string;
+    "@id": string;
+  };
   type?: string | string[];
   anyOf?: JsonSchemaNode[];
   properties?: { [key: string]: JsonSchemaNode };

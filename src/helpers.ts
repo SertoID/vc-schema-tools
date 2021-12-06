@@ -1,20 +1,6 @@
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
-
-/** Fields valid in JSON-LD Context Plus that are not valid in JSON-LD Context. */
-export const contextPlusFields = [
-  "@rootType",
-  "@replaceWith",
-  "@contains",
-  "@dataType",
-  "@items",
-  "@format",
-  "@required",
-  "@title",
-  "@description",
-  "@metadata",
-];
-export const contextPlusFieldsRegexes = contextPlusFields.map((field) => new RegExp(field));
+import { JsonSchemaNode } from "./types";
 
 export const jsonLdContextTypeMap: { [key: string]: { type: string; format?: string } } = {
   "@id": { type: "string", format: "uri" }, // JSON-LD @context convention for an IRI
@@ -30,6 +16,88 @@ export const jsonLdContextTypeMap: { [key: string]: { type: string; format?: str
   "xsd:date": { type: "string", format: "date" },
   "xsd:dateTime": { type: "string", format: "date-time" },
 };
+
+/** Map from a "nice" name for a type to a sample JsonSchemaNode of that type.  */
+export const jsonLdSchemaTypeMap: { [key: string]: JsonSchemaNode } = {
+  DID: {
+    $linkedData: {
+      term: "",
+      "@id": "@id",
+    },
+    type: "string",
+    format: "uri",
+  },
+  Text: {
+    $linkedData: {
+      term: "",
+      "@id": "http://schema.org/Text",
+    },
+    type: "string",
+  },
+  URL: {
+    $linkedData: {
+      term: "",
+      "@id": "http://schema.org/URL",
+    },
+    type: "string",
+    format: "uri",
+  },
+  Date: {
+    $linkedData: {
+      term: "",
+      "@id": "http://schema.org/Date",
+    },
+    type: "string",
+    format: "date",
+  },
+  DateTime: {
+    $linkedData: {
+      term: "",
+      "@id": "http://schema.org/DateTime",
+    },
+    type: "string",
+    format: "date-time",
+  },
+  Number: {
+    $linkedData: {
+      term: "",
+      "@id": "http://schema.org/Number",
+    },
+    type: "number",
+  },
+  Boolean: {
+    $linkedData: {
+      term: "",
+      "@id": "http://schema.org/Boolean",
+    },
+    type: "boolean",
+  },
+};
+
+export function nodeToTypeName(node: JsonSchemaNode): string | undefined {
+  if (Array.isArray(node.type)) {
+    return node.type.join(",");
+  }
+
+  for (const typeName in jsonLdSchemaTypeMap) {
+    const typeNode = jsonLdSchemaTypeMap[typeName];
+    if (node.$linkedData?.["@id"] && node.$linkedData["@id"] === typeNode.$linkedData?.["@id"]) {
+      return typeName;
+    }
+    if (typeName === "DID") {
+      // Don't match DID based on JSON Schema properties only, since those are the same as URL. Only match DID based on $linkedData above
+      continue;
+    }
+
+    if (node.type === typeNode.type && (node.format === typeNode.format || (!node.format && !typeNode.format))) {
+      return typeName;
+    }
+  }
+
+  if (typeof node.type === "string" && node.format) {
+    return `Text (${node.format})`;
+  }
+}
 
 export const baseVcJsonSchema = {
   type: "object",
@@ -114,6 +182,7 @@ async function loadSchema(uri: string) {
 export const getNewAjv = (): Ajv => {
   const ajv = new Ajv({ loadSchema });
   ajv.addKeyword("$metadata");
+  ajv.addKeyword("$linkedData");
   addFormats(ajv);
   return ajv;
 };
