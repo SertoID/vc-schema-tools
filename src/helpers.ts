@@ -114,6 +114,24 @@ export function nodeToTypeName(node: JsonSchemaNode): string | undefined {
 
   return JSON.stringify(node.type);
 }
+
+export function jsonSchemaCommentToLinkedData(_node: JsonSchemaNode): JsonSchemaNode {
+  // Duplicate node:
+  const node = JSON.parse(JSON.stringify(_node)) as JsonSchemaNode;
+
+  if (node.$comment && !node.$linkedData) {
+    node.$linkedData = JSON.parse(node.$comment);
+    delete node.$comment;
+  }
+
+  if (node.properties) {
+    Object.entries(node.properties).forEach(([key, nestedProp]) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      node.properties![key] = jsonSchemaCommentToLinkedData(nestedProp);
+    });
+  }
+
+  return node;
 }
 
 export const baseVcJsonSchema = {
