@@ -33,6 +33,7 @@ export interface JsonSchemaNode {
   };
   type?: string | string[];
   anyOf?: JsonSchemaNode[];
+  oneOf?: JsonSchemaNode[];
   properties?: { [key: string]: JsonSchemaNode };
   title?: string;
   description?: string;

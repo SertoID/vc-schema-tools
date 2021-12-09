@@ -75,8 +75,18 @@ export const jsonLdSchemaTypeMap: { [key: string]: JsonSchemaNode } = {
 };
 
 export function nodeToTypeName(node: JsonSchemaNode): string | undefined {
+  if (node.oneOf && Array.isArray(node.oneOf)) {
+    return node.oneOf.map(nodeToTypeName).join(" OR ");
+  }
+
   if (Array.isArray(node.type)) {
     return node.type.join(",");
+  }
+
+  if (node.$ref) {
+    return "Ref: " + node.$ref;
+  } else if (node.type === "array" && node.items?.$ref) {
+    return `List (Ref: ${node.items.$ref})`;
   }
 
   for (const typeName in jsonLdSchemaTypeMap) {
@@ -97,6 +107,13 @@ export function nodeToTypeName(node: JsonSchemaNode): string | undefined {
   if (typeof node.type === "string" && node.format) {
     return `Text (${node.format})`;
   }
+
+  if (node.type === "array") {
+    return "List";
+  }
+
+  return JSON.stringify(node.type);
+}
 }
 
 export const baseVcJsonSchema = {
