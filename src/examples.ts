@@ -5,10 +5,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   DiplomaCredential: {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/json-schema.json",
-    $linkedData: {
-      term: "DiplomaCredential",
-      "@id": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json#",
-    },
+    $linkedData: { term: "DiplomaCredential", "@id": "DiplomaCredential" },
     $metadata: {
       uris: {
         jsonLdContext: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json",
@@ -27,7 +24,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
     properties: {
       ...baseVcJsonSchema.properties,
       credentialSubject: {
-        $linkedData: { term: "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject" },
+        $linkedData: { term: "Diploma", "@id": "Diploma" },
         type: "object",
         required: ["id", "universityName", "degreeName"],
         properties: {
@@ -70,10 +67,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   ContentPublishCredential: {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "https://example.com/schemas/content-publish-credential/ld-context.json",
-    $linkedData: {
-      term: "ContentPublishCredential",
-      "@id": "https://example.com/schemas/content-publish-credential/ld-context.json#",
-    },
+    $linkedData: { term: "ContentPublishCredential", "@id": "ContentPublishCredential" },
     $metadata: {
       uris: {
         jsonLdContext: "https://example.com/schemas/content-publish-credential/ld-context.json",
@@ -92,7 +86,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
     properties: {
       ...baseVcJsonSchema.properties,
       credentialSubject: {
-        $linkedData: { term: "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject" },
+        $linkedData: { term: "ContentPublish", "@id": "ContentPublish" },
         type: "object",
         required: ["id", "publishedContent"],
         properties: {
@@ -211,7 +205,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   TestCredential: {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "https://example.com/schemas/test-credential/json-schema.json",
-    $linkedData: { term: "TestCredential", "@id": "https://example.com/schemas/test-credential/ld-context.json#" },
+    $linkedData: { term: "TestCredential", "@id": "TestCredential" },
     $metadata: {
       uris: {
         jsonLdContext: "https://example.com/schemas/test-credential/ld-context.json",
@@ -230,7 +224,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
     properties: {
       ...baseVcJsonSchema.properties,
       credentialSubject: {
-        $linkedData: { term: "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject" },
+        $linkedData: { term: "Test", "@id": "Test" },
         type: "object",
         required: ["id", "headline", "url", "date"],
         properties: {
@@ -303,10 +297,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   TestWithReferences: {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "https://example.com/schemas/test-with-references/json-schema.json",
-    $linkedData: {
-      term: "TestWithReferences",
-      "@id": "https://example.com/schemas/test-with-references/ld-context.json#",
-    },
+    $linkedData: { term: "TestWithReferencesCredential", "@id": "TestWithReferencesCredential" },
     $metadata: {
       uris: {
         jsonLdContext: "https://example.com/schemas/test-with-references/ld-context.json",
@@ -325,7 +316,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
     properties: {
       ...baseVcJsonSchema.properties,
       credentialSubject: {
-        $linkedData: { term: "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject" },
+        $linkedData: { term: "TestWithReferences", "@id": "TestWithReferences" },
         type: "object",
         required: ["name", "address"],
         properties: {
@@ -805,6 +796,7 @@ export const EXAMPLE_VCS: { [key: string]: VC } = {
     issuer: { id: "did:web:beta.agent.serto.id" },
     issuanceDate: "2021-10-13T21:57:34.000Z",
     credentialSubject: {
+      type: "Diploma",
       id: "did:ethr:0x02f4b0ceed160cccb47a66951baffac8a8ace75c33b761beb545e3ec99f44300fc",
       degreeName: "Bachelor of Science in Examples",
       universityName: "Example University",
@@ -831,6 +823,7 @@ export const EXAMPLE_VCS: { [key: string]: VC } = {
     issuer: "did:example:publisher-did",
     issuanceDate: "2017-12-05T14:27:42Z",
     credentialSubject: {
+      type: "ContentPublish",
       id: "did:example:publisher-did",
       publishedContent: {
         "@type": "Article",
@@ -861,7 +854,7 @@ export const EXAMPLE_VCS: { [key: string]: VC } = {
   },
   TestWithReferences: {
     "@context": ["https://www.w3.org/2018/credentials/v1"],
-    type: ["VerifiableCredential"],
+    type: ["VerifiableCredential", "TestWithReferencesCredential"],
     issuer: "did:example:some-did",
     issuanceDate: "2017-12-05T14:27:42Z",
     credentialSchema: {
@@ -869,6 +862,7 @@ export const EXAMPLE_VCS: { [key: string]: VC } = {
       type: "JsonSchemaValidator2018",
     },
     credentialSubject: {
+      type: "TestWithReferences",
       name: "John Credential",
       address: {
         streetAddress: "123 Identity Street",
