@@ -209,6 +209,11 @@ function jsonSchemaToNestedContext(node: JsonSchemaNode): { [key: string]: any }
   const ldContext = schemasToContext([node]);
   const ldTerm = node.$linkedData?.term;
 
+  if (ldTerm && ldContext?.["@context"]?.[ldTerm]?.["@context"]?.["@context"]) {
+    // JSON Schema description of "@context" attribute copied into JSON-LD @context of the term we just converted will break some readers with "Invalid JSON-LD syntax; invalid scoped context", so remove it
+    delete ldContext["@context"][ldTerm]["@context"]["@context"];
+  }
+
   // library adds @vocab value we don't need
   delete ldContext["@context"]["@vocab"];
 
