@@ -29,9 +29,7 @@ export class VcSchema {
     }
 
     try {
-      let vocabUri = this.jsonSchema.$metadata?.uris?.jsonLdContext;
-      vocabUri = vocabUri && vocabUri + "#";
-      this.jsonLdContext = jsonSchemaToNestedContext(this.jsonSchema, vocabUri);
+      this.jsonLdContext = jsonSchemaToContext(this.jsonSchema, this.jsonSchema.$metadata?.uris?.jsonLdContext);
     } catch (err) {
       throw Error("Failed to generate JSON-LD Context from input: " + err.message);
     }
@@ -109,6 +107,7 @@ export class VcSchema {
     return { isValid, message };
   }
 
+  /** Deprecated, but could migrate to google's new tool. */
   public openGoogleJsonLdValidatorPage(vc: any): void {
     const form = document.createElement("form");
     form.method = "post";
@@ -123,6 +122,11 @@ export class VcSchema {
 
     document.body.appendChild(form);
     form.submit();
+  }
+
+  public openJsonLdChecker(vc: any): void {
+    const jsonLd = JSON.stringify(this.getVcWithSchemaContext(vc), null, 2);
+    window.open("https://www.jsonld-checker.com/?json=" + encodeURIComponent(jsonLd), "_blank");
   }
 
   public openJsonLdPlaygroundPage(vc: any): void {
@@ -154,21 +158,77 @@ export class VcSchema {
     } else {
       vc["@context"] = [vc["@context"]].concat(schemaContext);
     }
+
+    if (Array.isArray(vc["@context"])) {
+      vc["@context"] = vc["@context"].filter((context) => !context.includes?.("://example.com"));
+    }
+
     return vc;
   }
 }
 
-function jsonSchemaToNestedContext(node: JsonSchemaNode, vocab?: string): { [key: string]: any } {
-  const ldContext = schemasToContext([node]);
-
-  if (vocab) {
-    ldContext["@context"]["@vocab"] = vocab;
-  } else {
-    delete ldContext["@context"]["@vocab"];
+function jsonSchemaToContext(schema: JsonSchema, contextBaseUrl?: string): { [key: string]: any } {
+  if (!schema.properties?.credentialSubject?.properties) {
+    throw Error("Invalid schema: no `credentialSubject` properties");
   }
 
-  // `schemasToContext` doesn't natively support nested properties, so here we loop through and see if any have nested properties and recursively call `schemasToContext` on them
+  const { subjectLdType, credLdType } = generateSchemaLdTypes(schema);
+
+  let url = contextBaseUrl;
+  if (!contextBaseUrl) {
+    console.warn("No URL found for JSON-LD @context. Falling back to example.org URL.");
+    url = "https://example.org/" + credLdType;
+  }
+
+  const context = {
+    "@context": {
+      "@vocab": url + "#",
+      [credLdType]: url + "#" + credLdType,
+      ...jsonSchemaToNestedContext(schema.properties.credentialSubject)["@context"],
+    },
+  };
+
+  if (context["@context"]?.[subjectLdType]?.["@context"]?.id) {
+    // Since `subjectLdType` will be used for `credentialSubject` and base W3C VC context already defines `credentialSubject.id` and is marked protected, we can't redefine it
+    delete context["@context"][subjectLdType]["@context"].id;
+  }
+
+  return context;
+}
+
+export function generateSchemaLdTypes(schema: JsonSchema): { subjectLdType: string; credLdType: string } {
+  let subjectLdType = schema.properties?.credentialSubject?.$linkedData?.term;
+  let credLdType = schema.$linkedData?.term;
+
+  if (credLdType && !subjectLdType) {
+    subjectLdType = credLdType + "Subject";
+  } else if (subjectLdType && !credLdType) {
+    credLdType = subjectLdType + "Credential";
+  }
+
+  if (!subjectLdType) {
+    subjectLdType = schema.properties?.credentialSubject?.title?.replace(/[^\w]/g, "") || "";
+  }
+  if (!credLdType) {
+    credLdType = schema.title?.replace(/[^\w]/g, "") || "";
+  }
+
+  return { subjectLdType, credLdType };
+}
+
+function jsonSchemaToNestedContext(node: JsonSchemaNode): { [key: string]: any } {
+  const ldContext = schemasToContext([node]);
   const ldTerm = node.$linkedData?.term;
+
+  if (ldTerm && ldContext?.["@context"]?.[ldTerm]?.["@context"]?.["@context"]) {
+    // JSON Schema description of "@context" attribute copied into JSON-LD @context of the term we just converted will break some readers with "Invalid JSON-LD syntax; invalid scoped context", so remove it
+    delete ldContext["@context"][ldTerm]["@context"]["@context"];
+  }
+
+  // library adds @vocab value we don't need
+  delete ldContext["@context"]["@vocab"];
+
+  // `schemasToContext` doesn't natively support nested properties, so here we loop through and see if any have nested properties and recursively call `schemasToContext` on them
   for (const propName in node.properties) {
     const prop = node.properties[propName];
     const propLdTerm = prop.$linkedData?.term;

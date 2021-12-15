@@ -115,19 +115,35 @@ export function nodeToTypeName(node: JsonSchemaNode): string | undefined {
   return JSON.stringify(node.type);
 }
 
-export function jsonSchemaCommentToLinkedData(_node: JsonSchemaNode): JsonSchemaNode {
+/** Recursively generate JSON Schema `$linkedData` objects that embed JSON-LD data in JSON Schema. Use `$comment` properties if present, or else guess at the values based on the JSON Schema types. */
+export function generateLinkedData(_node: JsonSchemaNode, key?: string): JsonSchemaNode {
   // Duplicate node:
   const node = JSON.parse(JSON.stringify(_node)) as JsonSchemaNode;
 
-  if (node.$comment && !node.$linkedData) {
-    node.$linkedData = JSON.parse(node.$comment);
-    delete node.$comment;
+  if (!node.$linkedData && node.$comment) {
+    try {
+      const parsedComment = JSON.parse(node.$comment);
+      if (parsedComment.term) {
+        node.$linkedData = parsedComment;
+        delete node.$comment;
+      }
+    } catch {
+      // Must've been a $comment for something else - nevermind
+    }
+  }
+
+  if (!node.$linkedData && key) {
+    const typeName = nodeToTypeName(node);
+    node.$linkedData = {
+      term: key,
+      "@id": jsonLdSchemaTypeMap[typeName || ""]?.$linkedData?.["@id"] || key,
+    };
   }
 
   if (node.properties) {
     Object.entries(node.properties).forEach(([key, nestedProp]) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      node.properties![key] = jsonSchemaCommentToLinkedData(nestedProp);
+      node.properties![key] = generateLinkedData(nestedProp, key);
     });
   }
 

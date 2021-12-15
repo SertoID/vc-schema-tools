@@ -5,10 +5,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   DiplomaCredential: {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/json-schema.json",
-    $linkedData: {
-      term: "DiplomaCredential",
-      "@id": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json#",
-    },
+    $linkedData: { term: "DiplomaCredential", "@id": "DiplomaCredential" },
     $metadata: {
       uris: {
         jsonLdContext: "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json",
@@ -27,7 +24,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
     properties: {
       ...baseVcJsonSchema.properties,
       credentialSubject: {
-        $linkedData: { term: "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject" },
+        $linkedData: { term: "Diploma", "@id": "Diploma" },
         type: "object",
         required: ["id", "universityName", "degreeName"],
         properties: {
@@ -38,7 +35,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
             format: "uri",
           },
           universityId: {
-            $linkedData: { term: "universityId", "@id": "@id" },
+            $linkedData: { term: "universityId", "@id": "https://schema.org/URL" },
             title: "University ID",
             description: "",
             type: "string",
@@ -70,10 +67,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   ContentPublishCredential: {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "https://example.com/schemas/content-publish-credential/ld-context.json",
-    $linkedData: {
-      term: "ContentPublishCredential",
-      "@id": "https://example.com/schemas/content-publish-credential/ld-context.json#",
-    },
+    $linkedData: { term: "ContentPublishCredential", "@id": "ContentPublishCredential" },
     $metadata: {
       uris: {
         jsonLdContext: "https://example.com/schemas/content-publish-credential/ld-context.json",
@@ -92,7 +86,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
     properties: {
       ...baseVcJsonSchema.properties,
       credentialSubject: {
-        $linkedData: { term: "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject" },
+        $linkedData: { term: "ContentPublish", "@id": "ContentPublish" },
         type: "object",
         required: ["id", "publishedContent"],
         properties: {
@@ -211,7 +205,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   TestCredential: {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "https://example.com/schemas/test-credential/json-schema.json",
-    $linkedData: { term: "TestCredential", "@id": "https://example.com/schemas/test-credential/ld-context.json#" },
+    $linkedData: { term: "TestCredential", "@id": "TestCredential" },
     $metadata: {
       uris: {
         jsonLdContext: "https://example.com/schemas/test-credential/ld-context.json",
@@ -230,7 +224,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
     properties: {
       ...baseVcJsonSchema.properties,
       credentialSubject: {
-        $linkedData: { term: "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject" },
+        $linkedData: { term: "Test", "@id": "Test" },
         type: "object",
         required: ["id", "headline", "url", "date"],
         properties: {
@@ -303,10 +297,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
   TestWithReferences: {
     $schema: "http://json-schema.org/draft-07/schema#",
     $id: "https://example.com/schemas/test-with-references/json-schema.json",
-    $linkedData: {
-      term: "TestWithReferences",
-      "@id": "https://example.com/schemas/test-with-references/ld-context.json#",
-    },
+    $linkedData: { term: "TestWithReferencesCredential", "@id": "TestWithReferencesCredential" },
     $metadata: {
       uris: {
         jsonLdContext: "https://example.com/schemas/test-with-references/ld-context.json",
@@ -325,7 +316,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
     properties: {
       ...baseVcJsonSchema.properties,
       credentialSubject: {
-        $linkedData: { term: "credentialSubject", "@id": "https://www.w3.org/2018/credentials#credentialSubject" },
+        $linkedData: { term: "TestWithReferences", "@id": "TestWithReferences" },
         type: "object",
         required: ["name", "address"],
         properties: {
@@ -353,96 +344,53 @@ export const EXAMPLE_JSON_LD_SCHEMAS: { [key: string]: string } = {
   DiplomaCredential: `{
   "@context": {
     "@version": 1.1,
-    "@rootType": "DiplomaCredential",
-    "@title": "Diploma Credential",
-    "@metadata": {
-      "uris": {
-        "jsonLdContext": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json",
-        "jsonSchema": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/json-schema.json"
-      },
-      "version": "1.0",
-      "slug": "diploma-credential",
-      "icon": "🎓",
-      "discoverable": true
-    },
     "w3ccred": "https://www.w3.org/2018/credentials#",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "schema-id": "https://beta.api.schemas.serto.id/v1/public/diploma-credential/1.2/ld-context.json#",
     "DiplomaCredential": {
-      "@id": "schema-id",
-      "@contains": "credentialSubject"
+      "@id": "schema-id"
     },
     "credentialSubject": {
       "@id": "w3ccred:credentialSubject",
-      "@required": true,
-      "@contains": ["degreeName", "universityName", "universityId", "graduationDate"],
       "@context": {
         "id": {
           "@id": "@id",
-          "@type": "@id",
-          "@title": "Alumni ID",
-          "@required": true
+          "@type": "@id"
         }
       }
     },
     "degreeName": {
       "@id": "schema-id:degreeName",
-      "@type": "http://schema.org/Text",
-      "@required": true,
-      "@title": "Degree Name",
-      "@description": "E.g. \\"Bachelor of Arts in Astrophysics\\""
+      "@type": "http://schema.org/Text"
     },
     "graduationDate": {
       "@id": "schema-id:graduationDate",
-      "@type": "http://schema.org/Date",
-      "@required": true,
-      "@title": "Graduation Date"
+      "@type": "http://schema.org/Date"
     },
     "universityName": {
       "@id": "schema-id:universityName",
-      "@type": "http://schema.org/Text",
-      "@required": true,
-      "@title": "University Name"
+      "@type": "http://schema.org/Text"
     },
     "universityId": {
       "@id": "schema-id:universityId",
-      "@type": "@id",
-      "@title": "University ID"
+      "@type": "@id"
     }
   }
 }`,
   ContentPublishCredential: `{
   "@context": {
     "@version": 1.1,
-    "@rootType": "ContentPublishCredential",
-    "@title": "Content Publish Credential",
-    "@description": "A credential representing a publisher publishing a piece of content such as a news article.",
-    "@metadata": {
-      "uris": {
-        "jsonLdContext": "https://example.com/schemas/content-publish-credential/ld-context.json",
-        "jsonSchema": "https://example.com/schemas/content-publish-credential/json-schema.json"
-      },
-      "version": "1.0",
-      "slug": "content-publish-credential",
-      "icon": "📰",
-      "discoverable": true
-    },
     "w3ccred": "https://www.w3.org/2018/credentials#",
     "schema-id": "https://example.com/schemas/content-publish-credential/ld-context.json#",
     "ContentPublishCredential": {
-      "@id": "schema-id",
-      "@contains": "credentialSubject"
+      "@id": "schema-id"
     },
     "credentialSubject": {
       "@id": "w3ccred:credentialSubject",
-      "@required": true,
-      "@contains": "publishedContent",
       "@context": {
         "id": {
           "@id": "@id",
-          "@type": "@id",
-          "@description": "Publisher DID",
-          "@required": true
+          "@type": "@id"
         }
       }
     },
@@ -452,18 +400,14 @@ export const EXAMPLE_JSON_LD_SCHEMAS: { [key: string]: string } = {
         "id": {
           "@id": "@id",
           "@type": "@id",
-          "@description": "Publisher DID or other unique identifier URI"
         },
         "name": {
           "@id": "http://schema.org/name",
-          "@type": "http://schema.org/Text",
-          "@required": true
+          "@type": "http://schema.org/Text"
         },
         "url": {
           "@id": "http://schema.org/url",
-          "@type": "http://schema.org/URL",
-          "@required": true,
-          "@description": "Publisher homepage"
+          "@type": "http://schema.org/URL"
         }
       }
     },
@@ -473,12 +417,10 @@ export const EXAMPLE_JSON_LD_SCHEMAS: { [key: string]: string } = {
         "id": {
           "@id": "@id",
           "@type": "@id",
-          "@description": "Author DID or other unique identifier URI"
         },
         "name": {
           "@id": "http://schema.org/name",
-          "@type": "http://schema.org/Text",
-          "@required": true
+          "@type": "http://schema.org/Text"
         }
       }
     },
@@ -487,19 +429,15 @@ export const EXAMPLE_JSON_LD_SCHEMAS: { [key: string]: string } = {
       "@context": {
         "id": {
           "@id": "@id",
-          "@type": "http://schema.org/Text",
-          "@description": "Globally unique identifier for this piece of content across all versions",
-          "@required": true
+          "@type": "http://schema.org/Text"
         },
         "versionId": {
           "@id": "http://schema.org/version",
           "@type": "http://schema.org/Text",
-          "@description": "Globally unique identifier that refers to this version of this piece of content"
         },
         "headline": {
           "@id": "http://schema.org/headline",
-          "@type": "http://schema.org/Text",
-          "@required": true
+          "@type": "http://schema.org/Text"
         },
         "description": {
           "@id": "http://schema.org/description",
@@ -507,13 +445,11 @@ export const EXAMPLE_JSON_LD_SCHEMAS: { [key: string]: string } = {
         },
         "url": {
           "@id": "http://schema.org/url",
-          "@type": "http://schema.org/URL",
-          "@required": true
+          "@type": "http://schema.org/URL"
         },
         "datePublished": {
           "@id": "http://schema.org/datePublished",
-          "@type": "http://schema.org/DateTime",
-          "@required": true
+          "@type": "http://schema.org/DateTime"
         },
         "dateModified": {
           "@id": "http://schema.org/dateModified",
@@ -521,19 +457,15 @@ export const EXAMPLE_JSON_LD_SCHEMAS: { [key: string]: string } = {
         },
         "publisher": {
           "@id": "http://schema.org/publisher",
-          "@type": "Organization",
-          "@required": true,
-          "@replaceWith": "Organization"
+          "@type": "Organization"
         },
         "author": {
           "@id": "http://schema.org/author",
-          "@type": "Person",
-          "@replaceWith": "Person"
+          "@type": "Person"
         },
         "keywords": {
           "@id": "http://schema.org/keywords",
           "@type": "http://schema.org/Text",
-          "@description": "Comma-separated list of tags/keywords"
         },
         "image": {
           "@id": "http://schema.org/image",
@@ -542,108 +474,72 @@ export const EXAMPLE_JSON_LD_SCHEMAS: { [key: string]: string } = {
         "rawContentUrl": {
           "@id": "schema-id:raw-content-url",
           "@type": "http://schema.org/URL",
-          "@description": "URL where raw, machine-readable, full text of content can be found (may require authentication)"
         },
         "rawContentHash": {
           "@id": "schema-id:raw-content-hash",
           "@type": "http://schema.org/Text",
-          "@description": "Keccak-256 hash of content at \`rawContentUrl\`"
         }
       }
     },
     "publishedContent": {
-      "@id": "schema-id:publishedContent",
-      "@description": "Data about piece of content this publisher has published",
-      "@required": true,
-      "@replaceWith": "Article"
+      "@id": "schema-id:publishedContent"
     }
   }
 }`,
   TestCredential: `{
   "@context": {
     "@version": 1.1,
-    "@rootType": "TestCredential",
-    "@title": "Test Credential",
-    "@description": "A flat test credential with all of the data types supported by our wizard UIs.",
-    "@metadata": {
-      "uris": {
-        "jsonLdContext": "https://example.com/schemas/test-credential/ld-context.json",
-        "jsonSchema": "https://example.com/schemas/test-credential/json-schema.json"
-      },
-      "version": "1.0",
-      "slug": "test-credential",
-      "icon": "🧪",
-      "discoverable": true
-    },
     "xsd": "http://www.w3.org/2001/XMLSchema#",
     "w3ccred": "https://www.w3.org/2018/credentials#",
     "schema-id": "https://example.com/schemas/test-credential/ld-context.json#",
     "TestCredential": {
-      "@id": "schema-id",
-      "@contains": "credentialSubject"
+      "@id": "schema-id"
     },
     "credentialSubject": {
       "@id": "w3ccred:credentialSubject",
-      "@required": true,
       "@context": {
         "id": {
           "@id": "@id",
-          "@type": "@id",
-          "@title": "Credential Subject ID",
-          "@description": "Globally unique identifier for the piece of content this credential is about",
-          "@required": true
+          "@type": "@id"
         },
         "headline": {
-          "@title": "Headline",
           "@id": "schema-id:headline",
-          "@type": "http://schema.org/Text",
-          "@required": true
+          "@type": "http://schema.org/Text"
         },
         "description": {
-          "@title": "Description",
           "@id": "schema-id:description",
           "@type": "http://schema.org/Text"
         },
         "url": {
-          "@title": "URL",
           "@id": "schema-id:url",
-          "@type": "http://schema.org/URL",
-          "@required": true
+          "@type": "http://schema.org/URL"
         },
         "dateTime": {
-          "@title": "Date & Time",
           "@id": "schema-id:date-time",
           "@type": "http://schema.org/DateTime"
         },
         "date": {
-          "@title": "Date",
           "@id": "schema-id:date",
-          "@type": "http://schema.org/Date",
-          "@required": true
+          "@type": "http://schema.org/Date"
         },
         "author": {
-          "@title": "Author",
           "@id": "schema-id:author",
           "@context": {
             "id": {
               "@id": "schema-id:publisher-id",
-              "@type": "http://schema.org/Text",
-              "@description": "Author DID or other unique identifier URI"
+              "@type": "http://schema.org/Text"
             },
             "name": {
               "@id": "schema-id:author-name",
-              "@type": "http://schema.org/Text",
-              "@required": true
+              "@type": "http://schema.org/Text"
             }
           }
         },
         "opinion": {
-          "@title": "Opinion",
           "@id": "schema-id:opinion",
           "@type": "http://schema.org/Boolean"
         },
         "numRevisions": {
-          "@title": "Number of Revisions",
           "@id": "schema-id:num-revisions",
           "@type": "http://schema.org/Number"
         }
@@ -900,6 +796,7 @@ export const EXAMPLE_VCS: { [key: string]: VC } = {
     issuer: { id: "did:web:beta.agent.serto.id" },
     issuanceDate: "2021-10-13T21:57:34.000Z",
     credentialSubject: {
+      type: "Diploma",
       id: "did:ethr:0x02f4b0ceed160cccb47a66951baffac8a8ace75c33b761beb545e3ec99f44300fc",
       degreeName: "Bachelor of Science in Examples",
       universityName: "Example University",
@@ -926,6 +823,7 @@ export const EXAMPLE_VCS: { [key: string]: VC } = {
     issuer: "did:example:publisher-did",
     issuanceDate: "2017-12-05T14:27:42Z",
     credentialSubject: {
+      type: "ContentPublish",
       id: "did:example:publisher-did",
       publishedContent: {
         "@type": "Article",
@@ -956,7 +854,7 @@ export const EXAMPLE_VCS: { [key: string]: VC } = {
   },
   TestWithReferences: {
     "@context": ["https://www.w3.org/2018/credentials/v1"],
-    type: ["VerifiableCredential"],
+    type: ["VerifiableCredential", "TestWithReferencesCredential"],
     issuer: "did:example:some-did",
     issuanceDate: "2017-12-05T14:27:42Z",
     credentialSchema: {
@@ -964,6 +862,7 @@ export const EXAMPLE_VCS: { [key: string]: VC } = {
       type: "JsonSchemaValidator2018",
     },
     credentialSubject: {
+      type: "TestWithReferences",
       name: "John Credential",
       address: {
         streetAddress: "123 Identity Street",
