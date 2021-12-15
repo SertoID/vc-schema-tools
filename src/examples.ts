@@ -35,7 +35,7 @@ export const EXAMPLE_SCHEMAS: { [key: string]: JsonSchema } = {
             format: "uri",
           },
           universityId: {
-            $linkedData: { term: "universityId", "@id": "@id" },
+            $linkedData: { term: "universityId", "@id": "https://schema.org/URL" },
             title: "University ID",
             description: "",
             type: "string",

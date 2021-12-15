@@ -107,6 +107,7 @@ export class VcSchema {
     return { isValid, message };
   }
 
+  /** Deprecated, but could migrate to google's new tool. */
   public openGoogleJsonLdValidatorPage(vc: any): void {
     const form = document.createElement("form");
     form.method = "post";
@@ -121,6 +122,11 @@ export class VcSchema {
 
     document.body.appendChild(form);
     form.submit();
+  }
+
+  public openJsonLdChecker(vc: any): void {
+    const jsonLd = JSON.stringify(this.getVcWithSchemaContext(vc), null, 2);
+    window.open("https://www.jsonld-checker.com/?json=" + encodeURIComponent(jsonLd), "_blank");
   }
 
   public openJsonLdPlaygroundPage(vc: any): void {
@@ -152,6 +158,11 @@ export class VcSchema {
     } else {
       vc["@context"] = [vc["@context"]].concat(schemaContext);
     }
+
+    if (Array.isArray(vc["@context"])) {
+      vc["@context"] = vc["@context"].filter((context) => !context.includes?.("://example.com"));
+    }
+
     return vc;
   }
 }
